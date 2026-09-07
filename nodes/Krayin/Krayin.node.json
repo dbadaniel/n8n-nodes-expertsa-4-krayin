@@ -1,0 +1,15 @@
+{
+  "node": "n8n-nodes-expertsa-4-krayin.krayin",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": [
+    "Sales & CRM"
+  ],
+  "resources": {
+    "primaryDocumentation": [
+      {
+        "url": "https://krayincrm.com/"
+      }
+    ]
+  }
+}
