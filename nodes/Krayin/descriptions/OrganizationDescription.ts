@@ -163,4 +163,26 @@ export const organizationFields: INodeProperties[] = [
         },
         description: 'Quantidade máxima de registros a retornar',
     },
+    {
+        displayName: 'Filtros',
+        name: 'filters',
+        type: 'collection',
+        placeholder: 'Adicionar Filtro',
+        default: {},
+        displayOptions: {
+            show: {
+                resource: ['organization'],
+                operation: ['getAll'],
+            },
+        },
+        options: [
+            {
+                displayName: 'Nome da Empresa',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Filtrar empresas pelo nome',
+            },
+        ],
+    },
 ];

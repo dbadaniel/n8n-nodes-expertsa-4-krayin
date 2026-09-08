@@ -186,6 +186,117 @@ export const leadFields: INodeProperties[] = [
                 default: '',
                 description: 'Previsão de quando a negociação será finalizada',
             },
+            {
+                displayName: 'Produtos em JSON (Avançado)',
+                name: 'productsJson',
+                type: 'json',
+                default: '',
+                description: 'Permite passar produtos diretamente via JSON, array de objetos ou objeto Krayin',
+            },
+            {
+                displayName: 'Atributos Extras em JSON (Avançado)',
+                name: 'customAttributesJson',
+                type: 'json',
+                default: '',
+                description: 'Objeto JSON com quaisquer atributos personalizados para o lead (ex: {"hotmart_status": "APPROVED"})',
+            },
+        ],
+    },
+
+    // -------------------------------------------------------------
+    // Produtos do Lead (Criar e Atualizar)
+    // -------------------------------------------------------------
+    {
+        displayName: 'Produtos do Lead',
+        name: 'productsUi',
+        type: 'fixedCollection',
+        typeOptions: {
+            multipleValues: true,
+        },
+        placeholder: 'Adicionar Produto',
+        default: {},
+        displayOptions: {
+            show: {
+                resource: ['lead'],
+                operation: ['create', 'update'],
+            },
+        },
+        description: 'Vincular produtos ao lead informando o ID e a quantidade',
+        options: [
+            {
+                name: 'productValues',
+                displayName: 'Produto',
+                values: [
+                    {
+                        displayName: 'ID do Produto',
+                        name: 'product_id',
+                        type: 'string',
+                        required: true,
+                        default: '',
+                        description: 'ID numérico do produto no Krayin CRM (ex: 6 ou {{ $json.id }})',
+                    },
+                    {
+                        displayName: 'Quantidade',
+                        name: 'quantity',
+                        type: 'number',
+                        default: 1,
+                        description: 'Quantidade de unidades deste produto',
+                    },
+                    {
+                        displayName: 'Preço Customizado (Opcional)',
+                        name: 'price',
+                        type: 'number',
+                        default: 0,
+                        description: 'Deixe 0 para buscar automaticamente o nome e preço cadastrados no CRM',
+                    },
+                ],
+            },
+        ],
+    },
+
+    // -------------------------------------------------------------
+    // Atributos Extras / Customizados (Criar e Atualizar)
+    // -------------------------------------------------------------
+    {
+        displayName: 'Atributos Extras (Custom Attributes)',
+        name: 'customAttributesUi',
+        type: 'fixedCollection',
+        typeOptions: {
+            multipleValues: true,
+        },
+        placeholder: 'Adicionar Atributo',
+        default: {},
+        displayOptions: {
+            show: {
+                resource: ['lead'],
+                operation: ['create', 'update'],
+            },
+        },
+        description: 'Campos e atributos personalizados do seu CRM (ex: status, transação, observação externa, etc.)',
+        options: [
+            {
+                name: 'customAttributeValues',
+                displayName: 'Atributo',
+                values: [
+                    {
+                        displayName: 'Código do Atributo (Code)',
+                        name: 'code',
+                        type: 'string',
+                        required: true,
+                        default: '',
+                        placeholder: 'ex: hotmart_status',
+                        description: 'Código da coluna/atributo customizado cadastrado no Krayin CRM',
+                    },
+                    {
+                        displayName: 'Valor',
+                        name: 'value',
+                        type: 'string',
+                        default: '',
+                        placeholder: 'ex: APPROVED',
+                        description: 'Valor do atributo',
+                    },
+                ],
+            },
         ],
     },
 
@@ -263,11 +374,63 @@ export const leadFields: INodeProperties[] = [
                 description: 'Reatribuir lead para outro usuário',
             },
             {
+                displayName: 'ID da Origem (Source ID)',
+                name: 'lead_source_id',
+                type: 'string',
+                default: '',
+                description: 'ID da origem do lead',
+            },
+            {
+                displayName: 'ID do Tipo de Lead',
+                name: 'lead_type_id',
+                type: 'string',
+                default: '',
+                description: 'ID da categoria do lead',
+            },
+            {
                 displayName: 'Data Prevista de Fechamento',
                 name: 'expected_close_date',
                 type: 'dateTime',
                 default: '',
                 description: 'Previsão de conclusão',
+            },
+            {
+                displayName: 'Modo de Atualização de Produtos',
+                name: 'productUpdateMode',
+                type: 'options',
+                options: [
+                    {
+                        name: 'Preservar Existentes e Mesclar Novos (Padrão)',
+                        value: 'preserveAndAdd',
+                        description: 'Mantém os produtos atuais do lead intactos e anexa os novos informados',
+                    },
+                    {
+                        name: 'Substituir Todos (Overwrite)',
+                        value: 'replace',
+                        description: 'Substitui todos os produtos do lead exclusivamente pelos informados nesta execução',
+                    },
+                    {
+                        name: 'Remover Todos os Produtos',
+                        value: 'clear',
+                        description: 'Remove todos os produtos vinculados ao lead',
+                    },
+                ],
+                default: 'preserveAndAdd',
+                description: 'Define como os produtos do lead devem ser gerenciados nesta atualização',
+            },
+            {
+                displayName: 'Produtos em JSON (Avançado)',
+                name: 'productsJson',
+                type: 'json',
+                default: '',
+                description: 'Permite passar produtos diretamente via JSON, array de objetos ou objeto Krayin',
+            },
+            {
+                displayName: 'Atributos Extras em JSON (Avançado)',
+                name: 'customAttributesJson',
+                type: 'json',
+                default: '',
+                description: 'Objeto JSON com quaisquer atributos personalizados para o lead',
             },
         ],
     },
@@ -319,6 +482,13 @@ export const leadFields: INodeProperties[] = [
         },
         options: [
             {
+                displayName: 'ID do Contato (Person ID)',
+                name: 'person_id',
+                type: 'string',
+                default: '',
+                description: 'Filtrar leads vinculados a um contato/cliente específico (ex: ID que veio de Listar Contatos)',
+            },
+            {
                 displayName: 'ID do Funil (Pipeline ID)',
                 name: 'lead_pipeline_id',
                 type: 'string',
@@ -330,14 +500,26 @@ export const leadFields: INodeProperties[] = [
                 name: 'lead_pipeline_stage_id',
                 type: 'string',
                 default: '',
-                description: 'Filtrar leads de uma fase específica',
+                description: 'Filtrar leads de uma fase específica do funil',
             },
             {
-                displayName: 'ID do Responsável (User ID)',
+                displayName: 'ID do Responsável / Vendedor (User ID)',
                 name: 'user_id',
                 type: 'string',
                 default: '',
-                description: 'Filtrar leads atribuídos a um usuário',
+                description: 'Filtrar leads atribuídos ao usuário/vendedor do CRM',
+            },
+            {
+                displayName: 'Status',
+                name: 'status',
+                type: 'options',
+                options: [
+                    { name: 'Aberto', value: 1 },
+                    { name: 'Ganho (Won)', value: 2 },
+                    { name: 'Perdido (Lost)', value: 3 },
+                ],
+                default: 1,
+                description: 'Filtrar pela situação do lead',
             },
         ],
     },

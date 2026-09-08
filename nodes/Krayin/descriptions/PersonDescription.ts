@@ -226,4 +226,33 @@ export const personFields: INodeProperties[] = [
         },
         description: 'Quantidade máxima de registros a retornar',
     },
+    {
+        displayName: 'Filtros',
+        name: 'filters',
+        type: 'collection',
+        placeholder: 'Adicionar Filtro',
+        default: {},
+        displayOptions: {
+            show: {
+                resource: ['person'],
+                operation: ['getAll'],
+            },
+        },
+        options: [
+            {
+                displayName: 'Nome',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Filtrar contatos pelo nome',
+            },
+            {
+                displayName: 'E-mail',
+                name: 'emails',
+                type: 'string',
+                default: '',
+                description: 'Filtrar contatos pelo e-mail',
+            },
+        ],
+    },
 ];

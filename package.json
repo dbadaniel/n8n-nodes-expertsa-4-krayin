@@ -37,7 +37,8 @@
     "prepublishOnly": "npm run build"
   },
   "files": [
-    "dist"
+    "dist",
+    "Exsa-azul.png"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,

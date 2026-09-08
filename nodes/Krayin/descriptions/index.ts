@@ -4,3 +4,4 @@ export * from './OrganizationDescription';
 export * from './ActivityDescription';
 export * from './ProductDescription';
 export * from './PipelineDescription';
+export * from './StageDescription';

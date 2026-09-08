@@ -229,4 +229,46 @@ export const activityFields: INodeProperties[] = [
         },
         description: 'Quantidade máxima de registros a retornar',
     },
+    {
+        displayName: 'Filtros',
+        name: 'filters',
+        type: 'collection',
+        placeholder: 'Adicionar Filtro',
+        default: {},
+        displayOptions: {
+            show: {
+                resource: ['activity'],
+                operation: ['getAll'],
+            },
+        },
+        options: [
+            {
+                displayName: 'Tipo de Atividade',
+                name: 'type',
+                type: 'options',
+                options: [
+                    { name: 'Ligação (Call)', value: 'call' },
+                    { name: 'Reunião (Meeting)', value: 'meeting' },
+                    { name: 'Almoço (Lunch)', value: 'lunch' },
+                    { name: 'Anotação / Tarefa (Note)', value: 'note' },
+                ],
+                default: 'call',
+                description: 'Filtrar por tipo de atividade',
+            },
+            {
+                displayName: 'Concluída (is_done)',
+                name: 'is_done',
+                type: 'boolean',
+                default: false,
+                description: 'Filtrar por atividades concluídas (1) ou pendentes (0)',
+            },
+            {
+                displayName: 'ID do Lead',
+                name: 'lead_id',
+                type: 'string',
+                default: '',
+                description: 'Filtrar atividades vinculadas a um lead específico',
+            },
+        ],
+    },
 ];

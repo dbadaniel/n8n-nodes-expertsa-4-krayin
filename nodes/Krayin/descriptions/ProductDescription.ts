@@ -19,10 +19,10 @@ export const productOperations: INodeProperties[] = [
                 action: 'Criar um produto',
             },
             {
-                name: 'Obter Produto',
+                name: 'Obter / Buscar Produto',
                 value: 'get',
-                description: 'Buscar um produto pelo ID',
-                action: 'Obter um produto',
+                description: 'Buscar um produto por ID ou SKU / Código de Oferta',
+                action: 'Obter ou buscar um produto',
             },
             {
                 name: 'Listar Produtos',
@@ -49,7 +49,7 @@ export const productOperations: INodeProperties[] = [
 
 export const productFields: INodeProperties[] = [
     {
-        displayName: 'ID do Produto',
+        displayName: 'ID ou SKU do Produto',
         name: 'productId',
         type: 'string',
         required: true,
@@ -60,7 +60,7 @@ export const productFields: INodeProperties[] = [
                 operation: ['get', 'update', 'delete'],
             },
         },
-        description: 'O ID numérico do produto no Krayin CRM',
+        description: 'ID numérico do produto (ex: 6) ou código SKU da oferta (ex: 9d5ejnqr). Na busca, aceita ID numérico ou código SKU.',
     },
     {
         displayName: 'Nome do Produto',
@@ -208,5 +208,34 @@ export const productFields: INodeProperties[] = [
             },
         },
         description: 'Quantidade máxima de registros a retornar',
+    },
+    {
+        displayName: 'Filtros',
+        name: 'filters',
+        type: 'collection',
+        placeholder: 'Adicionar Filtro',
+        default: {},
+        displayOptions: {
+            show: {
+                resource: ['product'],
+                operation: ['getAll'],
+            },
+        },
+        options: [
+            {
+                displayName: 'Nome do Produto',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Filtrar produtos pelo nome',
+            },
+            {
+                displayName: 'SKU / Código',
+                name: 'sku',
+                type: 'string',
+                default: '',
+                description: 'Filtrar produtos pelo código SKU',
+            },
+        ],
     },
 ];
