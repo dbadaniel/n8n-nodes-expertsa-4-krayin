@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const pipelineOperations: INodeProperties[] = [
     {
-        displayName: 'Operação',
+        displayName: 'Operation',
         name: 'operation',
         type: 'options',
         noDataExpression: true,
@@ -13,22 +13,22 @@ export const pipelineOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Obter Funil',
+                name: 'Get',
                 value: 'get',
-                description: 'Buscar um funil com suas fases pelo ID',
-                action: 'Obter um funil',
+                description: 'Get a sales pipeline with its stages by ID',
+                action: 'Get a pipeline',
             },
             {
                 name: 'Get Many',
                 value: 'getAll',
-                description: 'Listar funis de vendas configurados no CRM',
-                action: 'Listar funis',
+                description: 'Get many sales pipelines configured in CRM',
+                action: 'Get many pipelines',
             },
             {
-                name: 'Listar Estágios Do Funil',
+                name: 'Get Stages',
                 value: 'getStages',
-                description: 'Listar os estágios/fases de um funil com filtros de nome e ID',
-                action: 'Listar est gios do funil',
+                description: 'List stages of a pipeline with filters',
+                action: 'Get pipeline stages',
             },
         ],
         default: 'getAll',
@@ -37,7 +37,7 @@ export const pipelineOperations: INodeProperties[] = [
 
 export const pipelineFields: INodeProperties[] = [
     {
-        displayName: 'ID Do Funil (Pipeline ID)',
+        displayName: 'Pipeline ID',
         name: 'pipelineId',
         type: 'string',
         required: true,
@@ -48,10 +48,10 @@ export const pipelineFields: INodeProperties[] = [
                 operation: ['get'],
             },
         },
-        description: 'O ID do funil de vendas no Krayin CRM',
+        description: 'ID of the sales pipeline in Krayin CRM',
     },
     {
-        displayName: 'ID Do Funil (Pipeline ID)',
+        displayName: 'Pipeline ID',
         name: 'pipelineId',
         type: 'string',
         default: '',
@@ -61,13 +61,13 @@ export const pipelineFields: INodeProperties[] = [
                 operation: ['getStages'],
             },
         },
-        description: 'ID do funil cujos estágios deseja listar (deixe vazio para buscar em todos os funis)',
+        description: 'ID of the pipeline to list stages from (leave empty to search across all pipelines)',
     },
     {
-        displayName: 'Filtros',
+        displayName: 'Filters',
         name: 'filters',
         type: 'collection',
-        placeholder: 'Adicionar Filtro',
+        placeholder: 'Add Filter',
         default: {},
         displayOptions: {
             show: {
@@ -77,26 +77,26 @@ export const pipelineFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'ID Do Funil',
+                displayName: 'ID',
                 name: 'id',
                 type: 'string',
                 default: '',
-                description: 'Filtrar funil pelo ID numérico (ex: 1)',
+                description: 'Filter pipeline by numeric ID (e.g. 1)',
             },
             {
-                displayName: 'Nome Do Funil',
+                displayName: 'Name',
                 name: 'name',
                 type: 'string',
                 default: '',
-                description: 'Filtrar funil exatamente pelo nome (ex: Funil de Vendas)',
+                description: 'Filter pipeline by exact name',
             },
         ],
     },
     {
-        displayName: 'Filtros De Estágio',
+        displayName: 'Stage Filters',
         name: 'stageFilters',
         type: 'collection',
-        placeholder: 'Adicionar Filtro',
+        placeholder: 'Add Filter',
         default: {},
         displayOptions: {
             show: {
@@ -106,25 +106,25 @@ export const pipelineFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'ID Do Estágio',
-                name: 'id',
-                type: 'string',
-                default: '',
-                description: 'Filtrar pelo ID numérico do estágio (ex: 1)',
-            },
-            {
-                displayName: 'Nome Do Estágio',
-                name: 'name',
-                type: 'string',
-                default: '',
-                description: 'Filtrar pelo nome do estágio (ex: Novo, Contactado, etc.)',
-            },
-            {
-                displayName: 'Código Do Estágio (Code)',
+                displayName: 'Code',
                 name: 'code',
                 type: 'string',
                 default: '',
-                description: 'Filtrar pelo código interno do estágio (ex: new, won, lost)',
+                description: 'Filter stage by internal code (e.g. new, won, lost)',
+            },
+            {
+                displayName: 'ID',
+                name: 'id',
+                type: 'string',
+                default: '',
+                description: 'Filter by numeric stage ID (e.g. 1)',
+            },
+            {
+                displayName: 'Name',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Filter by stage name (e.g. New, Contacted)',
             },
         ],
     },

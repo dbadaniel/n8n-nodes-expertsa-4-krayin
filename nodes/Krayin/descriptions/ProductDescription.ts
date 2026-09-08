@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const productOperations: INodeProperties[] = [
     {
-        displayName: 'Operação',
+        displayName: 'Operation',
         name: 'operation',
         type: 'options',
         noDataExpression: true,
@@ -13,34 +13,34 @@ export const productOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Atualizar Produto',
-                value: 'update',
-                description: 'Atualizar dados de um produto',
-                action: 'Atualizar um produto',
-            },
-            {
-                name: 'Criar Produto',
+                name: 'Create',
                 value: 'create',
-                description: 'Cadastrar um novo produto ou serviço',
-                action: 'Criar um produto',
+                description: 'Create a new product or service',
+                action: 'Create a product',
             },
             {
-                name: 'Excluir Produto',
+                name: 'Delete',
                 value: 'delete',
-                description: 'Excluir um produto pelo ID',
-                action: 'Excluir um produto',
+                description: 'Delete a product by ID',
+                action: 'Delete a product',
+            },
+            {
+                name: 'Get',
+                value: 'get',
+                description: 'Get a product by ID or SKU',
+                action: 'Get a product',
             },
             {
                 name: 'Get Many',
                 value: 'getAll',
-                description: 'Listar produtos cadastrados',
-                action: 'Listar produtos',
+                description: 'Get many products registered in CRM',
+                action: 'Get many products',
             },
             {
-                name: 'Obter / Buscar Produto',
-                value: 'get',
-                description: 'Buscar um produto por ID ou SKU / Código de Oferta',
-                action: 'Obter ou buscar um produto',
+                name: 'Update',
+                value: 'update',
+                description: 'Update product details',
+                action: 'Update a product',
             },
         ],
         default: 'getAll',
@@ -49,7 +49,7 @@ export const productOperations: INodeProperties[] = [
 
 export const productFields: INodeProperties[] = [
     {
-        displayName: 'ID Ou SKU Do Produto',
+        displayName: 'Product ID or SKU',
         name: 'productId',
         type: 'string',
         required: true,
@@ -60,10 +60,10 @@ export const productFields: INodeProperties[] = [
                 operation: ['get', 'update', 'delete'],
             },
         },
-        description: 'ID numérico do produto (ex: 6) ou código SKU da oferta (ex: 9d5ejnqr). Na busca, aceita ID numérico ou código SKU.',
+        description: 'Numeric product ID (e.g. 6) or SKU code (e.g. 9d5ejnqr).',
     },
     {
-        displayName: 'Nome Do Produto',
+        displayName: 'Name',
         name: 'name',
         type: 'string',
         required: true,
@@ -74,10 +74,10 @@ export const productFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Nome comercial do produto ou serviço',
+        description: 'Name of the product or service',
     },
     {
-        displayName: 'SKU / Código',
+        displayName: 'SKU',
         name: 'sku',
         type: 'string',
         required: true,
@@ -88,10 +88,10 @@ export const productFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Código único de identificação do produto',
+        description: 'Unique SKU identification code',
     },
     {
-        displayName: 'Preço',
+        displayName: 'Price',
         name: 'price',
         type: 'number',
         required: true,
@@ -102,13 +102,13 @@ export const productFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Preço unitário padrão',
+        description: 'Standard unit price',
     },
     {
-        displayName: 'Campos Adicionais',
+        displayName: 'Additional Fields',
         name: 'additionalFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -118,21 +118,21 @@ export const productFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Descrição',
+                displayName: 'Description',
                 name: 'description',
                 type: 'string',
                 typeOptions: {
                     rows: 2,
                 },
                 default: '',
-                description: 'Detalhes sobre o produto',
+                description: 'Description or details of the product',
             },
             {
-                displayName: 'Quantidade Em Estoque',
+                displayName: 'Quantity',
                 name: 'quantity',
                 type: 'number',
                 default: 0,
-                description: 'Quantidade disponível',
+                description: 'Available inventory quantity',
             },
         ],
     },
@@ -140,7 +140,7 @@ export const productFields: INodeProperties[] = [
         displayName: 'Update Fields',
         name: 'updateFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -150,35 +150,37 @@ export const productFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Nome Do Produto',
-                name: 'name',
-                type: 'string',
-                default: '',
-            },
-            {
-                displayName: 'Preço',
-                name: 'price',
-                type: 'number',
-                default: 0,
-                description: 'Preço unitário',
-            },
-            {
-                displayName: 'Descrição',
+                displayName: 'Description',
                 name: 'description',
                 type: 'string',
                 default: '',
+                description: 'Description or details of the product',
             },
             {
-                displayName: 'Quantidade',
+                displayName: 'Name',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Name of the product or service',
+            },
+            {
+                displayName: 'Price',
+                name: 'price',
+                type: 'number',
+                default: 0,
+                description: 'Unit price of the product',
+            },
+            {
+                displayName: 'Quantity',
                 name: 'quantity',
                 type: 'number',
                 default: 0,
-                description: 'Quantidade em estoque',
+                description: 'Inventory quantity in stock',
             },
         ],
     },
     {
-        displayName: 'Retornar Todos',
+        displayName: 'Return All',
         name: 'returnAll',
         type: 'boolean',
         default: false,
@@ -191,7 +193,7 @@ export const productFields: INodeProperties[] = [
         description: 'Whether to return all results or only up to a given limit',
     },
     {
-        displayName: 'Limite',
+        displayName: 'Limit',
         name: 'limit',
         type: 'number',
         typeOptions: {
@@ -208,10 +210,10 @@ export const productFields: INodeProperties[] = [
         description: 'Max number of results to return',
     },
     {
-        displayName: 'Filtros',
+        displayName: 'Filters',
         name: 'filters',
         type: 'collection',
-        placeholder: 'Adicionar Filtro',
+        placeholder: 'Add Filter',
         default: {},
         displayOptions: {
             show: {
@@ -221,18 +223,18 @@ export const productFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Nome Do Produto',
+                displayName: 'Name',
                 name: 'name',
                 type: 'string',
                 default: '',
-                description: 'Filtrar produtos pelo nome',
+                description: 'Filter products by name',
             },
             {
-                displayName: 'SKU / Código',
+                displayName: 'SKU',
                 name: 'sku',
                 type: 'string',
                 default: '',
-                description: 'Filtrar produtos pelo código SKU',
+                description: 'Filter products by SKU code',
             },
         ],
     },

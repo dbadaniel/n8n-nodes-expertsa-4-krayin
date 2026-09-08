@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const personOperations: INodeProperties[] = [
     {
-        displayName: 'Operação',
+        displayName: 'Operation',
         name: 'operation',
         type: 'options',
         noDataExpression: true,
@@ -13,34 +13,34 @@ export const personOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Atualizar Contato',
-                value: 'update',
-                description: 'Atualizar dados de um contato existente',
-                action: 'Atualizar um contato',
-            },
-            {
-                name: 'Criar Contato',
+                name: 'Create',
                 value: 'create',
-                description: 'Cadastrar uma nova pessoa/contato',
-                action: 'Criar um contato',
+                description: 'Create a new contact or person',
+                action: 'Create a person',
             },
             {
-                name: 'Excluir Contato',
+                name: 'Delete',
                 value: 'delete',
-                description: 'Excluir um contato pelo ID',
-                action: 'Excluir um contato',
+                description: 'Delete a contact by ID',
+                action: 'Delete a person',
+            },
+            {
+                name: 'Get',
+                value: 'get',
+                description: 'Get a contact by ID',
+                action: 'Get a person',
             },
             {
                 name: 'Get Many',
                 value: 'getAll',
-                description: 'Listar contatos com paginação e filtros',
-                action: 'Listar contatos',
+                description: 'Get many contacts with pagination and filters',
+                action: 'Get many persons',
             },
             {
-                name: 'Obter Contato',
-                value: 'get',
-                description: 'Buscar um contato pelo ID',
-                action: 'Obter um contato',
+                name: 'Update',
+                value: 'update',
+                description: 'Update contact details',
+                action: 'Update a person',
             },
         ],
         default: 'getAll',
@@ -48,9 +48,8 @@ export const personOperations: INodeProperties[] = [
 ];
 
 export const personFields: INodeProperties[] = [
-    // ID do Contato
     {
-        displayName: 'ID Do Contato',
+        displayName: 'Contact ID',
         name: 'personId',
         type: 'string',
         required: true,
@@ -61,12 +60,10 @@ export const personFields: INodeProperties[] = [
                 operation: ['get', 'update', 'delete'],
             },
         },
-        description: 'O ID numérico do contato no Krayin CRM',
+        description: 'Numeric ID of the contact in Krayin CRM',
     },
-
-    // Criar Contato
     {
-        displayName: 'Nome Completo',
+        displayName: 'Name',
         name: 'name',
         type: 'string',
         required: true,
@@ -77,13 +74,13 @@ export const personFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Nome da pessoa de contato',
+        description: 'Full name of the contact person',
     },
     {
-        displayName: 'E-Mail Principal',
+        displayName: 'Email',
         name: 'email',
         type: 'string',
-        placeholder: 'nome@exemplo.com',
+        placeholder: 'name@example.com',
         default: '',
         displayOptions: {
             show: {
@@ -91,13 +88,13 @@ export const personFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Endereço de e-mail do contato',
+        description: 'Primary email address of the contact',
     },
     {
-        displayName: 'Telefone Principal',
+        displayName: 'Contact Number',
         name: 'contact_number',
         type: 'string',
-        placeholder: '+55 11 99999-9999',
+        placeholder: '+1 234 567 8900',
         default: '',
         displayOptions: {
             show: {
@@ -105,10 +102,10 @@ export const personFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Número de telefone ou WhatsApp',
+        description: 'Primary phone number of the contact',
     },
     {
-        displayName: 'ID Da Organização',
+        displayName: 'Organization ID',
         name: 'organization_id',
         type: 'string',
         default: '',
@@ -118,13 +115,13 @@ export const personFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'ID da empresa à qual este contato pertence',
+        description: 'ID of the organization this contact belongs to',
     },
     {
-        displayName: 'Campos Adicionais',
+        displayName: 'Additional Fields',
         name: 'additionalFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -134,21 +131,19 @@ export const personFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Cargo (Job Title)',
+                displayName: 'Job Title',
                 name: 'job_title',
                 type: 'string',
                 default: '',
-                description: 'Cargo ou ocupação profissional',
+                description: 'Professional role or job title of the contact',
             },
         ],
     },
-
-    // Atualizar Contato
     {
         displayName: 'Update Fields',
         name: 'updateFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -158,47 +153,45 @@ export const personFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Cargo (Job Title)',
-                name: 'job_title',
-                type: 'string',
-                default: '',
-                description: 'Cargo da pessoa',
-            },
-            {
-                displayName: 'E-Mail Principal',
-                name: 'email',
-                type: 'string',
-                placeholder: 'name@email.com',
-                default: '',
-                description: 'Endereço de e-mail',
-            },
-            {
-                displayName: 'ID Da Organização',
-                name: 'organization_id',
-                type: 'string',
-                default: '',
-                description: 'Vincular a uma empresa',
-            },
-            {
-                displayName: 'Nome Completo',
-                name: 'name',
-                type: 'string',
-                default: '',
-                description: 'Nome da pessoa',
-            },
-            {
-                displayName: 'Telefone Principal',
+                displayName: 'Contact Number',
                 name: 'contact_number',
                 type: 'string',
                 default: '',
-                description: 'Número de telefone',
+                description: 'Phone number of the contact',
+            },
+            {
+                displayName: 'Email',
+                name: 'email',
+                type: 'string',
+                placeholder: 'name@example.com',
+                default: '',
+                description: 'Email address of the contact',
+            },
+            {
+                displayName: 'Job Title',
+                name: 'job_title',
+                type: 'string',
+                default: '',
+                description: 'Job title of the contact',
+            },
+            {
+                displayName: 'Name',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Full name of the contact',
+            },
+            {
+                displayName: 'Organization ID',
+                name: 'organization_id',
+                type: 'string',
+                default: '',
+                description: 'Link this contact to an organization ID',
             },
         ],
     },
-
-    // Listar Contatos (getAll)
     {
-        displayName: 'Retornar Todos',
+        displayName: 'Return All',
         name: 'returnAll',
         type: 'boolean',
         default: false,
@@ -211,7 +204,7 @@ export const personFields: INodeProperties[] = [
         description: 'Whether to return all results or only up to a given limit',
     },
     {
-        displayName: 'Limite',
+        displayName: 'Limit',
         name: 'limit',
         type: 'number',
         typeOptions: {
@@ -228,10 +221,10 @@ export const personFields: INodeProperties[] = [
         description: 'Max number of results to return',
     },
     {
-        displayName: 'Filtros',
+        displayName: 'Filters',
         name: 'filters',
         type: 'collection',
-        placeholder: 'Adicionar Filtro',
+        placeholder: 'Add Filter',
         default: {},
         displayOptions: {
             show: {
@@ -241,18 +234,19 @@ export const personFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Nome',
+                displayName: 'Email',
+                name: 'emails',
+                type: 'string',
+                placeholder: 'name@example.com',
+                default: '',
+                description: 'Filter contacts by email address',
+            },
+            {
+                displayName: 'Name',
                 name: 'name',
                 type: 'string',
                 default: '',
-                description: 'Filtrar contatos pelo nome',
-            },
-            {
-                displayName: 'E-Mail',
-                name: 'emails',
-                type: 'string',
-                default: '',
-                description: 'Filtrar contatos pelo e-mail',
+                description: 'Filter contacts by name',
             },
         ],
     },

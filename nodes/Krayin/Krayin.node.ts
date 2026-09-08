@@ -42,7 +42,7 @@ export class Krayin implements INodeType {
         group: ['transform'],
         version: 1,
         subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-        description: 'Integração completa com a API REST do Krayin CRM (Leads, Contatos, Empresas, Atividades e Produtos)',
+        description: 'Consume Krayin CRM REST API (Leads, Persons, Organizations, Activities, Products, and Pipelines)',
         defaults: {
             name: 'Krayin CRM',
         },
@@ -57,45 +57,45 @@ export class Krayin implements INodeType {
         ],
         properties: [
             {
-                displayName: 'Recurso',
+                displayName: 'Resource',
                 name: 'resource',
                 type: 'options',
                 noDataExpression: true,
                 options: [
                     {
-                        name: 'Atividade / Tarefa',
+                        name: 'Activity',
                         value: 'activity',
-                        description: 'Gerenciar chamadas, reuniões e tarefas',
+                        description: 'Manage calls, meetings, lunches and tasks',
                     },
                     {
-                        name: 'Estágio Do Funil (Stage)',
-                        value: 'stage',
-                        description: 'Consultar e filtrar estágios/etapas dos funis de vendas',
-                    },
-                    {
-                        name: 'Funil (Pipeline)',
-                        value: 'pipeline',
-                        description: 'Consultar pipelines e etapas de vendas',
-                    },
-                    {
-                        name: 'Lead / Oportunidade',
+                        name: 'Lead',
                         value: 'lead',
-                        description: 'Gerenciar oportunidades de vendas no funil',
+                        description: 'Manage sales leads and opportunities',
                     },
                     {
-                        name: 'Organização / Empresa',
+                        name: 'Organization',
                         value: 'organization',
-                        description: 'Gerenciar empresas e organizações',
+                        description: 'Manage companies and organizations',
                     },
                     {
-                        name: 'Pessoa / Contato',
+                        name: 'Person',
                         value: 'person',
-                        description: 'Gerenciar pessoas e contatos de clientes',
+                        description: 'Manage individual contacts and customers',
                     },
                     {
-                        name: 'Produto / Serviço',
+                        name: 'Pipeline',
+                        value: 'pipeline',
+                        description: 'View sales pipelines',
+                    },
+                    {
+                        name: 'Product',
                         value: 'product',
-                        description: 'Gerenciar produtos e itens do CRM',
+                        description: 'Manage products and services in CRM',
+                    },
+                    {
+                        name: 'Stage',
+                        value: 'stage',
+                        description: 'View and filter pipeline stages',
                     },
                 ],
                 default: 'lead',

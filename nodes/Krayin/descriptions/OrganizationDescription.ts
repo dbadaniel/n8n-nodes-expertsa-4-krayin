@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const organizationOperations: INodeProperties[] = [
     {
-        displayName: 'Operação',
+        displayName: 'Operation',
         name: 'operation',
         type: 'options',
         noDataExpression: true,
@@ -13,34 +13,34 @@ export const organizationOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Atualizar Organização',
-                value: 'update',
-                description: 'Atualizar dados de uma empresa',
-                action: 'Atualizar uma organiza o',
-            },
-            {
-                name: 'Criar Organização',
+                name: 'Create',
                 value: 'create',
-                description: 'Cadastrar uma nova empresa/organização',
-                action: 'Criar uma organiza o',
+                description: 'Create a new organization or company',
+                action: 'Create an organization',
             },
             {
-                name: 'Excluir Organização',
+                name: 'Delete',
                 value: 'delete',
-                description: 'Excluir uma empresa pelo ID',
-                action: 'Excluir uma organiza o',
+                description: 'Delete an organization by ID',
+                action: 'Delete an organization',
+            },
+            {
+                name: 'Get',
+                value: 'get',
+                description: 'Get an organization by ID',
+                action: 'Get an organization',
             },
             {
                 name: 'Get Many',
                 value: 'getAll',
-                description: 'Listar empresas com paginação',
-                action: 'Listar organiza es',
+                description: 'Get many organizations with pagination',
+                action: 'Get many organizations',
             },
             {
-                name: 'Obter Organização',
-                value: 'get',
-                description: 'Buscar uma empresa pelo ID',
-                action: 'Obter uma organiza o',
+                name: 'Update',
+                value: 'update',
+                description: 'Update organization details',
+                action: 'Update an organization',
             },
         ],
         default: 'getAll',
@@ -49,7 +49,7 @@ export const organizationOperations: INodeProperties[] = [
 
 export const organizationFields: INodeProperties[] = [
     {
-        displayName: 'ID Da Organização',
+        displayName: 'Organization ID',
         name: 'organizationId',
         type: 'string',
         required: true,
@@ -60,10 +60,10 @@ export const organizationFields: INodeProperties[] = [
                 operation: ['get', 'update', 'delete'],
             },
         },
-        description: 'O ID numérico da empresa no Krayin CRM',
+        description: 'Numeric ID of the organization in Krayin CRM',
     },
     {
-        displayName: 'Nome Da Empresa',
+        displayName: 'Name',
         name: 'name',
         type: 'string',
         required: true,
@@ -74,13 +74,13 @@ export const organizationFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Razão social ou nome fantasia da empresa',
+        description: 'Name of the company or organization',
     },
     {
-        displayName: 'Campos Adicionais',
+        displayName: 'Additional Fields',
         name: 'additionalFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -90,14 +90,14 @@ export const organizationFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Endereço',
+                displayName: 'Address',
                 name: 'address',
                 type: 'string',
                 typeOptions: {
                     rows: 2,
                 },
                 default: '',
-                description: 'Endereço completo da empresa',
+                description: 'Full address of the organization',
             },
         ],
     },
@@ -105,7 +105,7 @@ export const organizationFields: INodeProperties[] = [
         displayName: 'Update Fields',
         name: 'updateFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -115,25 +115,26 @@ export const organizationFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Nome Da Empresa',
-                name: 'name',
-                type: 'string',
-                default: '',
-            },
-            {
-                displayName: 'Endereço',
+                displayName: 'Address',
                 name: 'address',
                 type: 'string',
                 typeOptions: {
                     rows: 2,
                 },
                 default: '',
-                description: 'Endereço completo',
+                description: 'Full address of the organization',
+            },
+            {
+                displayName: 'Name',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Name of the company or organization',
             },
         ],
     },
     {
-        displayName: 'Retornar Todos',
+        displayName: 'Return All',
         name: 'returnAll',
         type: 'boolean',
         default: false,
@@ -146,7 +147,7 @@ export const organizationFields: INodeProperties[] = [
         description: 'Whether to return all results or only up to a given limit',
     },
     {
-        displayName: 'Limite',
+        displayName: 'Limit',
         name: 'limit',
         type: 'number',
         typeOptions: {
@@ -163,10 +164,10 @@ export const organizationFields: INodeProperties[] = [
         description: 'Max number of results to return',
     },
     {
-        displayName: 'Filtros',
+        displayName: 'Filters',
         name: 'filters',
         type: 'collection',
-        placeholder: 'Adicionar Filtro',
+        placeholder: 'Add Filter',
         default: {},
         displayOptions: {
             show: {
@@ -176,11 +177,11 @@ export const organizationFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Nome Da Empresa',
+                displayName: 'Name',
                 name: 'name',
                 type: 'string',
                 default: '',
-                description: 'Filtrar empresas pelo nome',
+                description: 'Filter organizations by name',
             },
         ],
     },

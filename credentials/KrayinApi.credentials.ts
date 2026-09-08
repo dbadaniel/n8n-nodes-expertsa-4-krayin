@@ -12,36 +12,36 @@ export class KrayinApi implements ICredentialType {
 
     properties: INodeProperties[] = [
         {
-            displayName: 'Tipo de Autenticação',
+            displayName: 'Authentication Type',
             name: 'authenticationType',
             type: 'options',
             options: [
                 {
-                    name: 'Login (Email e Senha) - Recomendado',
+                    name: 'Login (Email & Password) - Recommended',
                     value: 'login',
-                    description: 'Autentica via API e obtém o token automaticamente (Método funcional e homologado)',
+                    description: 'Authenticates via API and obtains the Bearer token automatically',
                 },
                 {
-                    name: 'API Token Direto (Em Desenvolvimento)',
+                    name: 'API Token (In Development)',
                     value: 'apiToken',
-                    description: 'Atenção: Opção em desenvolvimento, não funcional no momento. Use Login (Email e Senha)',
+                    description: 'Direct Bearer token option (use Login for standard setup)',
                 },
             ],
             default: 'login',
-            description: 'Como o n8n deve autenticar na API do Krayin CRM (Recomenda-se Login)',
+            description: 'How n8n should authenticate with the Krayin CRM API',
         },
         {
-            displayName: 'URL Base da Instância',
+            displayName: 'Base URL',
             name: 'baseUrl',
             type: 'string',
             default: '',
-            placeholder: 'https://crm.suaempresa.com.br ou http://localhost/public',
+            placeholder: 'https://crm.example.com or http://localhost/public',
             required: true,
-            description: 'A URL base da instalação do Krayin CRM (sem barra final). Ex: https://ocjcrm.expertsa.com.br',
+            description: 'The base URL of the Krayin CRM instance (without trailing slash)',
         },
-        // Campos para Login (Email e Senha)
+        // Login Credentials
         {
-            displayName: 'Email do Administrador',
+            displayName: 'Email',
             name: 'email',
             type: 'string',
             default: '',
@@ -52,10 +52,10 @@ export class KrayinApi implements ICredentialType {
                     authenticationType: ['login'],
                 },
             },
-            description: 'Email do usuário administrador no Krayin CRM',
+            description: 'Administrator email in Krayin CRM',
         },
         {
-            displayName: 'Senha',
+            displayName: 'Password',
             name: 'password',
             type: 'string',
             typeOptions: {
@@ -68,10 +68,10 @@ export class KrayinApi implements ICredentialType {
                     authenticationType: ['login'],
                 },
             },
-            description: 'Senha do administrador no Krayin CRM',
+            description: 'Administrator password in Krayin CRM',
         },
         {
-            displayName: 'Nome do Dispositivo (Device Name)',
+            displayName: 'Device Name',
             name: 'deviceName',
             type: 'string',
             default: 'n8n',
@@ -81,24 +81,24 @@ export class KrayinApi implements ICredentialType {
                     authenticationType: ['login'],
                 },
             },
-            description: 'Identificador do dispositivo enviado ao Laravel Sanctum (device_name)',
+            description: 'Device identifier sent to Laravel Sanctum (device_name)',
         },
         {
-            displayName: 'Endpoint de Login',
+            displayName: 'Login Endpoint',
             name: 'loginPath',
             type: 'string',
             default: '/api/v1/login',
-            placeholder: '/api/v1/login ou /api/admin/login',
+            placeholder: '/api/v1/login',
             displayOptions: {
                 show: {
                     authenticationType: ['login'],
                 },
             },
-            description: 'Caminho do endpoint de login. O padrão oficial da API é /api/v1/login.',
+            description: 'Path of the login endpoint. Default is /api/v1/login.',
         },
-        // Campo para API Token direto
+        // API Token
         {
-            displayName: 'API Token (Laravel Sanctum)',
+            displayName: 'API Token',
             name: 'apiToken',
             type: 'string',
             typeOptions: {
@@ -111,7 +111,7 @@ export class KrayinApi implements ICredentialType {
                     authenticationType: ['apiToken'],
                 },
             },
-            description: 'O Bearer Token de API gerado no Krayin CRM',
+            description: 'The Bearer API token generated in Krayin CRM',
         },
     ];
 

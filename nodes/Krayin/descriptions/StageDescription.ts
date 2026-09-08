@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const stageOperations: INodeProperties[] = [
     {
-        displayName: 'Operação',
+        displayName: 'Operation',
         name: 'operation',
         type: 'options',
         noDataExpression: true,
@@ -13,16 +13,16 @@ export const stageOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Get Many',
-                value: 'getAll',
-                description: 'Listar estágios/etapas dos funis de vendas com filtros',
-                action: 'Listar est gios',
+                name: 'Get',
+                value: 'get',
+                description: 'Get a specific pipeline stage by ID',
+                action: 'Get a stage',
             },
             {
-                name: 'Obter Estágio',
-                value: 'get',
-                description: 'Buscar um estágio específico pelo ID',
-                action: 'Obter um est gio',
+                name: 'Get Many',
+                value: 'getAll',
+                description: 'Get many pipeline stages with filters',
+                action: 'Get many stages',
             },
         ],
         default: 'getAll',
@@ -31,7 +31,7 @@ export const stageOperations: INodeProperties[] = [
 
 export const stageFields: INodeProperties[] = [
     {
-        displayName: 'ID Do Funil (Pipeline ID)',
+        displayName: 'Pipeline ID',
         name: 'pipelineId',
         type: 'string',
         default: '',
@@ -41,10 +41,10 @@ export const stageFields: INodeProperties[] = [
                 operation: ['getAll', 'get'],
             },
         },
-        description: 'ID do funil para buscar os estágios (deixe vazio para buscar em todos os funis)',
+        description: 'Pipeline ID to fetch stages from (leave empty to search across all pipelines)',
     },
     {
-        displayName: 'ID Do Estágio (Stage ID)',
+        displayName: 'Stage ID',
         name: 'stageId',
         type: 'string',
         required: true,
@@ -55,13 +55,13 @@ export const stageFields: INodeProperties[] = [
                 operation: ['get'],
             },
         },
-        description: 'O ID numérico do estágio no Krayin CRM',
+        description: 'Numeric ID of the stage in Krayin CRM',
     },
     {
-        displayName: 'Filtros',
+        displayName: 'Filters',
         name: 'filters',
         type: 'collection',
-        placeholder: 'Adicionar Filtro',
+        placeholder: 'Add Filter',
         default: {},
         displayOptions: {
             show: {
@@ -71,25 +71,25 @@ export const stageFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'ID Do Estágio',
-                name: 'id',
-                type: 'string',
-                default: '',
-                description: 'Filtrar pelo ID numérico do estágio (ex: 1)',
-            },
-            {
-                displayName: 'Nome Do Estágio',
-                name: 'name',
-                type: 'string',
-                default: '',
-                description: 'Filtrar pelo nome do estágio (ex: Novo, Contactado, etc.)',
-            },
-            {
-                displayName: 'Código Do Estágio (Code)',
+                displayName: 'Code',
                 name: 'code',
                 type: 'string',
                 default: '',
-                description: 'Filtrar pelo código interno do estágio (ex: new, won, lost)',
+                description: 'Filter stage by internal code (e.g. new, won, lost)',
+            },
+            {
+                displayName: 'ID',
+                name: 'id',
+                type: 'string',
+                default: '',
+                description: 'Filter by numeric stage ID (e.g. 1)',
+            },
+            {
+                displayName: 'Name',
+                name: 'name',
+                type: 'string',
+                default: '',
+                description: 'Filter by stage name (e.g. New, Contacted)',
             },
         ],
     },

@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const leadOperations: INodeProperties[] = [
     {
-        displayName: 'Operação',
+        displayName: 'Operation',
         name: 'operation',
         type: 'options',
         noDataExpression: true,
@@ -13,34 +13,34 @@ export const leadOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Atualizar Lead',
-                value: 'update',
-                description: 'Atualizar dados, estágio ou status de um lead',
-                action: 'Atualizar um lead',
-            },
-            {
-                name: 'Criar Lead',
+                name: 'Create',
                 value: 'create',
-                description: 'Criar uma nova oportunidade ou lead no funil',
-                action: 'Criar um lead',
+                description: 'Create a new sales lead or opportunity',
+                action: 'Create a lead',
             },
             {
-                name: 'Excluir Lead',
+                name: 'Delete',
                 value: 'delete',
-                description: 'Remover um lead pelo ID',
-                action: 'Excluir um lead',
+                description: 'Delete a lead by ID',
+                action: 'Delete a lead',
+            },
+            {
+                name: 'Get',
+                value: 'get',
+                description: 'Get a lead by ID',
+                action: 'Get a lead',
             },
             {
                 name: 'Get Many',
                 value: 'getAll',
-                description: 'Listar oportunidades/leads com filtros e paginação',
-                action: 'Listar leads',
+                description: 'Get many leads with filters and pagination',
+                action: 'Get many leads',
             },
             {
-                name: 'Obter Lead',
-                value: 'get',
-                description: 'Buscar um lead específico pelo ID',
-                action: 'Obter um lead',
+                name: 'Update',
+                value: 'update',
+                description: 'Update lead details, stage or status',
+                action: 'Update a lead',
             },
         ],
         default: 'getAll',
@@ -49,10 +49,10 @@ export const leadOperations: INodeProperties[] = [
 
 export const leadFields: INodeProperties[] = [
     // -------------------------------------------------------------
-    // Obter / Excluir Lead
+    // Get / Delete Lead
     // -------------------------------------------------------------
     {
-        displayName: 'ID Do Lead',
+        displayName: 'Lead ID',
         name: 'leadId',
         type: 'string',
         required: true,
@@ -63,14 +63,14 @@ export const leadFields: INodeProperties[] = [
                 operation: ['get', 'update', 'delete'],
             },
         },
-        description: 'O ID numérico do lead no Krayin CRM',
+        description: 'Numeric ID of the lead in Krayin CRM',
     },
 
     // -------------------------------------------------------------
-    // Criar Lead
+    // Create Lead
     // -------------------------------------------------------------
     {
-        displayName: 'Título',
+        displayName: 'Title',
         name: 'title',
         type: 'string',
         required: true,
@@ -81,10 +81,10 @@ export const leadFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Título ou nome da oportunidade de venda',
+        description: 'Title or name of the lead opportunity',
     },
     {
-        displayName: 'Valor Do Lead',
+        displayName: 'Lead Value',
         name: 'lead_value',
         type: 'number',
         default: 0,
@@ -94,10 +94,10 @@ export const leadFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'Valor monetário estimado da oportunidade',
+        description: 'Estimated monetary value of the opportunity',
     },
     {
-        displayName: 'ID Da Pessoa (Contato)',
+        displayName: 'Contact ID',
         name: 'person_id',
         type: 'string',
         default: '',
@@ -107,10 +107,10 @@ export const leadFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'ID da pessoa/contato associado a este lead',
+        description: 'ID of the contact person associated with this lead',
     },
     {
-        displayName: 'ID Do Funil (Pipeline)',
+        displayName: 'Pipeline ID',
         name: 'lead_pipeline_id',
         type: 'string',
         default: '',
@@ -120,10 +120,10 @@ export const leadFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'ID do funil de vendas (se vazio, usa o funil padrão)',
+        description: 'ID of the sales pipeline (uses default pipeline if empty)',
     },
     {
-        displayName: 'ID Da Fase (Stage)',
+        displayName: 'Stage ID',
         name: 'lead_pipeline_stage_id',
         type: 'string',
         default: '',
@@ -133,13 +133,13 @@ export const leadFields: INodeProperties[] = [
                 operation: ['create'],
             },
         },
-        description: 'ID da etapa do funil em que o lead será criado',
+        description: 'ID of the pipeline stage where the lead will be placed',
     },
     {
-        displayName: 'Campos Adicionais',
+        displayName: 'Additional Fields',
         name: 'additionalFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -149,71 +149,71 @@ export const leadFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Atributos Extras Em JSON (Avançado)',
+                displayName: 'Custom Attributes JSON (Advanced)',
                 name: 'customAttributesJson',
                 type: 'json',
                 default: '',
-                description: 'Objeto JSON com quaisquer atributos personalizados para o lead (ex: {"hotmart_status": "APPROVED"})',
+                description: 'JSON object with custom attributes for the lead (e.g. {"hotmart_status": "APPROVED"})',
             },
             {
-                displayName: 'Data Prevista De Fechamento',
-                name: 'expected_close_date',
-                type: 'dateTime',
-                default: '',
-                description: 'Previsão de quando a negociação será finalizada',
-            },
-            {
-                displayName: 'Descrição',
+                displayName: 'Description',
                 name: 'description',
                 type: 'string',
                 typeOptions: {
                     rows: 3,
                 },
                 default: '',
-                description: 'Detalhes ou anotações sobre o lead',
+                description: 'Notes or details about the lead',
             },
             {
-                displayName: 'ID Da Origem (Source ID)',
+                displayName: 'Expected Close Date',
+                name: 'expected_close_date',
+                type: 'dateTime',
+                default: '',
+                description: 'Forecasted deal closing date',
+            },
+            {
+                displayName: 'Lead Source ID',
                 name: 'lead_source_id',
                 type: 'string',
                 default: '',
-                description: 'ID da origem do lead (ex: Google, Indicação, etc.)',
+                description: 'ID of the lead source (e.g. Website, Referral)',
             },
             {
-                displayName: 'ID Do Responsável (User ID)',
-                name: 'user_id',
-                type: 'string',
-                default: '',
-                description: 'ID do vendedor/usuário responsável pelo lead',
-            },
-            {
-                displayName: 'ID Do Tipo De Lead',
+                displayName: 'Lead Type ID',
                 name: 'lead_type_id',
                 type: 'string',
                 default: '',
-                description: 'ID da categoria/tipo de oportunidade',
+                description: 'ID of the lead category or type',
             },
             {
-                displayName: 'Produtos Em JSON (Avançado)',
+                displayName: 'Products JSON (Advanced)',
                 name: 'productsJson',
                 type: 'json',
                 default: '',
-                description: 'Permite passar produtos diretamente via JSON, array de objetos ou objeto Krayin',
+                description: 'Pass products directly as a JSON array of objects or Krayin product payload',
+            },
+            {
+                displayName: 'User ID',
+                name: 'user_id',
+                type: 'string',
+                default: '',
+                description: 'ID of the CRM user/salesperson responsible for the lead',
             },
         ],
     },
 
     // -------------------------------------------------------------
-    // Produtos do Lead (Criar e Atualizar)
+    // Lead Products (Create & Update)
     // -------------------------------------------------------------
     {
-        displayName: 'Produtos Do Lead',
+        displayName: 'Lead Products',
         name: 'productsUi',
         type: 'fixedCollection',
         typeOptions: {
             multipleValues: true,
         },
-        placeholder: 'Adicionar Produto',
+        placeholder: 'Add Product',
         default: {},
         displayOptions: {
             show: {
@@ -221,33 +221,33 @@ export const leadFields: INodeProperties[] = [
                 operation: ['create', 'update'],
             },
         },
-        description: 'Vincular produtos ao lead informando o ID e a quantidade',
+        description: 'Link products to the lead by specifying ID and quantity',
         options: [
             {
                 name: 'productValues',
-                displayName: 'Produto',
+                displayName: 'Product',
                 values: [
                     {
-                        displayName: 'ID Do Produto',
+                        displayName: 'Product ID',
                         name: 'product_id',
                         type: 'string',
                         required: true,
                         default: '',
-                        description: 'ID numérico do produto no Krayin CRM (ex: 6)',
+                        description: 'Numeric ID of the product in Krayin CRM (e.g. 6)',
                     },
                     {
-                        displayName: 'Quantidade',
+                        displayName: 'Quantity',
                         name: 'quantity',
                         type: 'number',
                         default: 1,
-                        description: 'Quantidade de unidades deste produto',
+                        description: 'Quantity of units for this product',
                     },
                     {
-                        displayName: 'Preço Customizado (Opcional)',
+                        displayName: 'Price',
                         name: 'price',
                         type: 'number',
                         default: 0,
-                        description: 'Deixe 0 para buscar automaticamente o nome e preço cadastrados no CRM',
+                        description: 'Custom price (leave 0 to fetch standard price from CRM)',
                     },
                 ],
             },
@@ -255,16 +255,16 @@ export const leadFields: INodeProperties[] = [
     },
 
     // -------------------------------------------------------------
-    // Atributos Extras / Customizados (Criar e Atualizar)
+    // Custom Attributes (Create & Update)
     // -------------------------------------------------------------
     {
-        displayName: 'Atributos Extras (Custom Attributes)',
+        displayName: 'Custom Attributes',
         name: 'customAttributesUi',
         type: 'fixedCollection',
         typeOptions: {
             multipleValues: true,
         },
-        placeholder: 'Adicionar Atributo',
+        placeholder: 'Add Attribute',
         default: {},
         displayOptions: {
             show: {
@@ -272,28 +272,28 @@ export const leadFields: INodeProperties[] = [
                 operation: ['create', 'update'],
             },
         },
-        description: 'Campos e atributos personalizados do seu CRM (ex: status, transação, observação externa, etc.)',
+        description: 'Custom fields and attributes for your CRM leads',
         options: [
             {
                 name: 'customAttributeValues',
-                displayName: 'Atributo',
+                displayName: 'Attribute',
                 values: [
                     {
-                        displayName: 'Código Do Atributo (Code)',
+                        displayName: 'Code',
                         name: 'code',
                         type: 'string',
                         required: true,
                         default: '',
-                        placeholder: 'ex: hotmart_status',
-                        description: 'Código da coluna/atributo customizado cadastrado no Krayin CRM',
+                        placeholder: 'e.g. hotmart_status',
+                        description: 'Attribute column code in Krayin CRM',
                     },
                     {
-                        displayName: 'Valor',
+                        displayName: 'Value',
                         name: 'value',
                         type: 'string',
                         default: '',
-                        placeholder: 'ex: APPROVED',
-                        description: 'Valor do atributo',
+                        placeholder: 'e.g. APPROVED',
+                        description: 'Attribute value',
                     },
                 ],
             },
@@ -301,13 +301,13 @@ export const leadFields: INodeProperties[] = [
     },
 
     // -------------------------------------------------------------
-    // Atualizar Lead
+    // Update Lead
     // -------------------------------------------------------------
     {
         displayName: 'Update Fields',
         name: 'updateFields',
         type: 'collection',
-        placeholder: 'Adicionar Campo',
+        placeholder: 'Add Field',
         default: {},
         displayOptions: {
             show: {
@@ -317,129 +317,129 @@ export const leadFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Atributos Extras Em JSON (Avançado)',
+                displayName: 'Custom Attributes JSON (Advanced)',
                 name: 'customAttributesJson',
                 type: 'json',
                 default: '',
-                description: 'Objeto JSON com quaisquer atributos personalizados para o lead',
+                description: 'JSON object with custom attributes for the lead',
             },
             {
-                displayName: 'Data Prevista De Fechamento',
-                name: 'expected_close_date',
-                type: 'dateTime',
-                default: '',
-                description: 'Previsão de conclusão',
-            },
-            {
-                displayName: 'Descrição',
+                displayName: 'Description',
                 name: 'description',
                 type: 'string',
                 typeOptions: {
                     rows: 3,
                 },
                 default: '',
-                description: 'Descrição ou notas',
+                description: 'Notes or details about the lead',
             },
             {
-                displayName: 'ID Da Fase (Stage)',
-                name: 'lead_pipeline_stage_id',
-                type: 'string',
+                displayName: 'Expected Close Date',
+                name: 'expected_close_date',
+                type: 'dateTime',
                 default: '',
-                description: 'Mover lead para uma nova fase do funil',
+                description: 'Forecasted deal closing date',
             },
             {
-                displayName: 'ID Da Origem (Source ID)',
+                displayName: 'Lead Source ID',
                 name: 'lead_source_id',
                 type: 'string',
                 default: '',
-                description: 'ID da origem do lead',
+                description: 'ID of the lead source',
             },
             {
-                displayName: 'ID Do Funil (Pipeline)',
-                name: 'lead_pipeline_id',
-                type: 'string',
-                default: '',
-                description: 'ID do funil de vendas',
-            },
-            {
-                displayName: 'ID Do Responsável (User ID)',
-                name: 'user_id',
-                type: 'string',
-                default: '',
-                description: 'Reatribuir lead para outro usuário',
-            },
-            {
-                displayName: 'ID Do Tipo De Lead',
+                displayName: 'Lead Type ID',
                 name: 'lead_type_id',
                 type: 'string',
                 default: '',
-                description: 'ID da categoria do lead',
+                description: 'ID of the lead category or type',
             },
             {
-                displayName: 'Modo De Atualização De Produtos',
+                displayName: 'Lead Value',
+                name: 'lead_value',
+                type: 'number',
+                default: 0,
+                description: 'Updated monetary value of the opportunity',
+            },
+            {
+                displayName: 'Pipeline ID',
+                name: 'lead_pipeline_id',
+                type: 'string',
+                default: '',
+                description: 'ID of the sales pipeline',
+            },
+            {
+                displayName: 'Product Update Mode',
                 name: 'productUpdateMode',
                 type: 'options',
                 options: [
                     {
-                        name: 'Preservar Existentes E Mesclar Novos (Padrão)',
-                        value: 'preserveAndAdd',
-                        description: 'Mantém os produtos atuais do lead intactos e anexa os novos informados',
-                    },
-                    {
-                        name: 'Substituir Todos (Overwrite)',
-                        value: 'replace',
-                        description: 'Substitui todos os produtos do lead exclusivamente pelos informados nesta execução',
-                    },
-                    {
-                        name: 'Remover Todos Os Produtos',
+                        name: 'Clear All Products',
                         value: 'clear',
-                        description: 'Remove todos os produtos vinculados ao lead',
+                        description: 'Remove all products attached to the lead',
+                    },
+                    {
+                        name: 'Preserve Existing and Add New (Default)',
+                        value: 'preserveAndAdd',
+                        description: 'Keep current products and merge new ones',
+                    },
+                    {
+                        name: 'Replace All (Overwrite)',
+                        value: 'replace',
+                        description: 'Overwrite existing products exclusively with new ones',
                     },
                 ],
                 default: 'preserveAndAdd',
-                description: 'Define como os produtos do lead devem ser gerenciados nesta atualização',
+                description: 'How products should be managed during this lead update',
             },
             {
-                displayName: 'Produtos Em JSON (Avançado)',
+                displayName: 'Products JSON (Advanced)',
                 name: 'productsJson',
                 type: 'json',
                 default: '',
-                description: 'Permite passar produtos diretamente via JSON, array de objetos ou objeto Krayin',
+                description: 'Pass products directly as JSON',
+            },
+            {
+                displayName: 'Stage ID',
+                name: 'lead_pipeline_stage_id',
+                type: 'string',
+                default: '',
+                description: 'Move lead to a new pipeline stage ID',
             },
             {
                 displayName: 'Status',
                 name: 'status',
                 type: 'options',
                 options: [
-                    { name: 'Aberto', value: 1 },
-                    { name: 'Ganho (Won)', value: 2 },
-                    { name: 'Perdido (Lost)', value: 3 },
+                    { name: 'Lost', value: 3 },
+                    { name: 'Open', value: 1 },
+                    { name: 'Won', value: 2 },
                 ],
                 default: 1,
-                description: 'Situação da negociação',
+                description: 'Status of the lead opportunity',
             },
             {
-                displayName: 'Título',
+                displayName: 'Title',
                 name: 'title',
                 type: 'string',
                 default: '',
-                description: 'Novo título da oportunidade',
+                description: 'Updated title of the opportunity',
             },
             {
-                displayName: 'Valor Do Lead',
-                name: 'lead_value',
-                type: 'number',
-                default: 0,
-                description: 'Novo valor da oportunidade',
+                displayName: 'User ID',
+                name: 'user_id',
+                type: 'string',
+                default: '',
+                description: 'Reassign lead to another salesperson ID',
             },
         ],
     },
 
     // -------------------------------------------------------------
-    // Listar Leads (getAll)
+    // Get Many Leads (getAll)
     // -------------------------------------------------------------
     {
-        displayName: 'Retornar Todos',
+        displayName: 'Return All',
         name: 'returnAll',
         type: 'boolean',
         default: false,
@@ -452,7 +452,7 @@ export const leadFields: INodeProperties[] = [
         description: 'Whether to return all results or only up to a given limit',
     },
     {
-        displayName: 'Limite',
+        displayName: 'Limit',
         name: 'limit',
         type: 'number',
         typeOptions: {
@@ -469,10 +469,10 @@ export const leadFields: INodeProperties[] = [
         description: 'Max number of results to return',
     },
     {
-        displayName: 'Filtros',
+        displayName: 'Filters',
         name: 'filters',
         type: 'collection',
-        placeholder: 'Adicionar Filtro',
+        placeholder: 'Add Filter',
         default: {},
         displayOptions: {
             show: {
@@ -482,44 +482,44 @@ export const leadFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'ID Da Fase (Stage ID)',
-                name: 'lead_pipeline_stage_id',
-                type: 'string',
-                default: '',
-                description: 'Filtrar leads de uma fase específica do funil',
-            },
-            {
-                displayName: 'ID Do Contato (Person ID)',
+                displayName: 'Contact ID',
                 name: 'person_id',
                 type: 'string',
                 default: '',
-                description: 'Filtrar leads vinculados a um contato/cliente específico (ex: ID que veio de Listar Contatos)',
+                description: 'Filter leads linked to a specific contact ID',
             },
             {
-                displayName: 'ID Do Funil (Pipeline ID)',
+                displayName: 'Pipeline ID',
                 name: 'lead_pipeline_id',
                 type: 'string',
                 default: '',
-                description: 'Filtrar leads de um funil específico',
+                description: 'Filter leads from a specific pipeline ID',
             },
             {
-                displayName: 'ID Do Responsável / Vendedor (User ID)',
-                name: 'user_id',
+                displayName: 'Stage ID',
+                name: 'lead_pipeline_stage_id',
                 type: 'string',
                 default: '',
-                description: 'Filtrar leads atribuídos ao usuário/vendedor do CRM',
+                description: 'Filter leads from a specific stage ID',
             },
             {
                 displayName: 'Status',
                 name: 'status',
                 type: 'options',
                 options: [
-                    { name: 'Aberto', value: 1 },
-                    { name: 'Ganho (Won)', value: 2 },
-                    { name: 'Perdido (Lost)', value: 3 },
+                    { name: 'Lost', value: 3 },
+                    { name: 'Open', value: 1 },
+                    { name: 'Won', value: 2 },
                 ],
                 default: 1,
-                description: 'Filtrar pela situação do lead',
+                description: 'Filter by lead status',
+            },
+            {
+                displayName: 'User ID',
+                name: 'user_id',
+                type: 'string',
+                default: '',
+                description: 'Filter leads assigned to a specific user ID',
             },
         ],
     },
