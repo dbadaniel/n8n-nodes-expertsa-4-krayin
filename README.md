@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./Exsa-azul.png" alt="Expertsa" width="280"/>
+  <img src="./Exsa-azul.png" alt="Expertsa" width="480"/>
   <h1>n8n-nodes-expertsa-4-krayin</h1>
   <p><strong>Integração Completa e Inteligente com o Krayin CRM para n8n</strong></p>
 </div>
