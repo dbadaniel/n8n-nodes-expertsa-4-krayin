@@ -38,7 +38,7 @@ export class Krayin implements INodeType {
     description: INodeTypeDescription = {
         displayName: 'Krayin CRM',
         name: 'krayin',
-        icon: 'file:krayin.svg',
+        icon: { light: 'file:krayin.svg', dark: 'file:krayin.svg' },
         group: ['transform'],
         version: 1,
         subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -725,9 +725,6 @@ export class Krayin implements INodeType {
                                     // Mantém erro original se nem por SKU encontrou
                                 }
                                 if (!product) {
-                                    if (error instanceof NodeApiError || error instanceof NodeOperationError) {
-                                        throw error;
-                                    }
                                     throw new NodeApiError(this.getNode(), error as JsonObject);
                                 }
                             }
@@ -904,9 +901,6 @@ export class Krayin implements INodeType {
                 if (this.continueOnFail()) {
                     returnData.push({ json: { error: error.message }, pairedItem: { item: i } });
                     continue;
-                }
-                if (error instanceof NodeApiError || error instanceof NodeOperationError) {
-                    throw error;
                 }
                 throw new NodeApiError(this.getNode(), error as JsonObject);
             }
