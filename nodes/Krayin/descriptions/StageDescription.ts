@@ -13,16 +13,16 @@ export const stageOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Listar Estágios',
+                name: 'Get Many',
                 value: 'getAll',
                 description: 'Listar estágios/etapas dos funis de vendas com filtros',
-                action: 'Listar estágios',
+                action: 'Listar est gios',
             },
             {
                 name: 'Obter Estágio',
                 value: 'get',
                 description: 'Buscar um estágio específico pelo ID',
-                action: 'Obter um estágio',
+                action: 'Obter um est gio',
             },
         ],
         default: 'getAll',
@@ -31,7 +31,7 @@ export const stageOperations: INodeProperties[] = [
 
 export const stageFields: INodeProperties[] = [
     {
-        displayName: 'ID do Funil (Pipeline ID)',
+        displayName: 'ID Do Funil (Pipeline ID)',
         name: 'pipelineId',
         type: 'string',
         default: '',
@@ -44,7 +44,7 @@ export const stageFields: INodeProperties[] = [
         description: 'ID do funil para buscar os estágios (deixe vazio para buscar em todos os funis)',
     },
     {
-        displayName: 'ID do Estágio (Stage ID)',
+        displayName: 'ID Do Estágio (Stage ID)',
         name: 'stageId',
         type: 'string',
         required: true,
@@ -71,21 +71,21 @@ export const stageFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'ID do Estágio',
+                displayName: 'ID Do Estágio',
                 name: 'id',
                 type: 'string',
                 default: '',
                 description: 'Filtrar pelo ID numérico do estágio (ex: 1)',
             },
             {
-                displayName: 'Nome do Estágio',
+                displayName: 'Nome Do Estágio',
                 name: 'name',
                 type: 'string',
                 default: '',
                 description: 'Filtrar pelo nome do estágio (ex: Novo, Contactado, etc.)',
             },
             {
-                displayName: 'Código do Estágio (Code)',
+                displayName: 'Código Do Estágio (Code)',
                 name: 'code',
                 type: 'string',
                 default: '',

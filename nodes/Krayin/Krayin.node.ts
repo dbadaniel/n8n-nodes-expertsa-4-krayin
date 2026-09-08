@@ -1,4 +1,6 @@
 import {
+    NodeApiError,
+    NodeConnectionTypes,
     NodeOperationError,
 } from 'n8n-workflow';
 import type {
@@ -7,6 +9,7 @@ import type {
     INodeType,
     INodeTypeDescription,
     IDataObject,
+    JsonObject,
 } from 'n8n-workflow';
 
 import {
@@ -43,8 +46,9 @@ export class Krayin implements INodeType {
         defaults: {
             name: 'Krayin CRM',
         },
-        inputs: ['main'],
-        outputs: ['main'],
+        usableAsTool: true,
+        inputs: [NodeConnectionTypes.Main],
+        outputs: [NodeConnectionTypes.Main],
         credentials: [
             {
                 name: 'krayinApi',
@@ -59,29 +63,14 @@ export class Krayin implements INodeType {
                 noDataExpression: true,
                 options: [
                     {
-                        name: 'Lead / Oportunidade',
-                        value: 'lead',
-                        description: 'Gerenciar oportunidades de vendas no funil',
-                    },
-                    {
-                        name: 'Pessoa / Contato',
-                        value: 'person',
-                        description: 'Gerenciar pessoas e contatos de clientes',
-                    },
-                    {
-                        name: 'Organização / Empresa',
-                        value: 'organization',
-                        description: 'Gerenciar empresas e organizações',
-                    },
-                    {
                         name: 'Atividade / Tarefa',
                         value: 'activity',
                         description: 'Gerenciar chamadas, reuniões e tarefas',
                     },
                     {
-                        name: 'Produto / Serviço',
-                        value: 'product',
-                        description: 'Gerenciar produtos e itens do CRM',
+                        name: 'Estágio Do Funil (Stage)',
+                        value: 'stage',
+                        description: 'Consultar e filtrar estágios/etapas dos funis de vendas',
                     },
                     {
                         name: 'Funil (Pipeline)',
@@ -89,9 +78,24 @@ export class Krayin implements INodeType {
                         description: 'Consultar pipelines e etapas de vendas',
                     },
                     {
-                        name: 'Estágio do Funil (Stage)',
-                        value: 'stage',
-                        description: 'Consultar e filtrar estágios/etapas dos funis de vendas',
+                        name: 'Lead / Oportunidade',
+                        value: 'lead',
+                        description: 'Gerenciar oportunidades de vendas no funil',
+                    },
+                    {
+                        name: 'Organização / Empresa',
+                        value: 'organization',
+                        description: 'Gerenciar empresas e organizações',
+                    },
+                    {
+                        name: 'Pessoa / Contato',
+                        value: 'person',
+                        description: 'Gerenciar pessoas e contatos de clientes',
+                    },
+                    {
+                        name: 'Produto / Serviço',
+                        value: 'product',
+                        description: 'Gerenciar produtos e itens do CRM',
                     },
                 ],
                 default: 'lead',
@@ -720,7 +724,12 @@ export class Krayin implements INodeType {
                                 } catch {
                                     // Mantém erro original se nem por SKU encontrou
                                 }
-                                if (!product) throw error;
+                                if (!product) {
+                                    if (error instanceof NodeApiError || error instanceof NodeOperationError) {
+                                        throw error;
+                                    }
+                                    throw new NodeApiError(this.getNode(), error as JsonObject);
+                                }
                             }
                         } else {
                             // 2. Se for texto ou código alfanumérico (ex: código de oferta '9d5ejnqr'): busca por SKU
@@ -886,17 +895,20 @@ export class Krayin implements INodeType {
                 // Normaliza o retorno em itens do n8n
                 if (Array.isArray(responseData)) {
                     for (const entry of responseData) {
-                        returnData.push({ json: entry });
+                        returnData.push({ json: entry, pairedItem: { item: i } });
                     }
                 } else if (responseData !== undefined && responseData !== null) {
-                    returnData.push({ json: responseData });
+                    returnData.push({ json: responseData, pairedItem: { item: i } });
                 }
             } catch (error: any) {
                 if (this.continueOnFail()) {
                     returnData.push({ json: { error: error.message }, pairedItem: { item: i } });
                     continue;
                 }
-                throw error;
+                if (error instanceof NodeApiError || error instanceof NodeOperationError) {
+                    throw error;
+                }
+                throw new NodeApiError(this.getNode(), error as JsonObject);
             }
         }
 

@@ -13,34 +13,34 @@ export const activityOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Criar Atividade',
-                value: 'create',
-                description: 'Agendar uma tarefa, ligação, reunião ou almoço',
-                action: 'Criar uma atividade',
-            },
-            {
-                name: 'Obter Atividade',
-                value: 'get',
-                description: 'Buscar uma atividade pelo ID',
-                action: 'Obter uma atividade',
-            },
-            {
-                name: 'Listar Atividades',
-                value: 'getAll',
-                description: 'Listar atividades agendadas',
-                action: 'Listar atividades',
-            },
-            {
                 name: 'Atualizar Atividade',
                 value: 'update',
                 description: 'Atualizar dados ou marcar atividade como concluída',
                 action: 'Atualizar uma atividade',
             },
             {
+                name: 'Criar Atividade',
+                value: 'create',
+                description: 'Agendar uma tarefa, ligação, reunião ou almoço',
+                action: 'Criar uma atividade',
+            },
+            {
                 name: 'Excluir Atividade',
                 value: 'delete',
                 description: 'Excluir uma atividade pelo ID',
                 action: 'Excluir uma atividade',
+            },
+            {
+                name: 'Get Many',
+                value: 'getAll',
+                description: 'Listar atividades agendadas',
+                action: 'Listar atividades',
+            },
+            {
+                name: 'Obter Atividade',
+                value: 'get',
+                description: 'Buscar uma atividade pelo ID',
+                action: 'Obter uma atividade',
             },
         ],
         default: 'getAll',
@@ -49,7 +49,7 @@ export const activityOperations: INodeProperties[] = [
 
 export const activityFields: INodeProperties[] = [
     {
-        displayName: 'ID da Atividade',
+        displayName: 'ID Da Atividade',
         name: 'activityId',
         type: 'string',
         required: true,
@@ -77,7 +77,7 @@ export const activityFields: INodeProperties[] = [
         description: 'Título ou resumo da atividade',
     },
     {
-        displayName: 'Tipo de Atividade',
+        displayName: 'Tipo De Atividade',
         name: 'type',
         type: 'options',
         options: [
@@ -97,7 +97,7 @@ export const activityFields: INodeProperties[] = [
         description: 'Tipo de compromisso ou tarefa',
     },
     {
-        displayName: 'Data/Hora de Início',
+        displayName: 'Data/Hora De Início',
         name: 'schedule_from',
         type: 'dateTime',
         required: true,
@@ -111,7 +111,7 @@ export const activityFields: INodeProperties[] = [
         description: 'Horário de início programado',
     },
     {
-        displayName: 'Data/Hora de Fim',
+        displayName: 'Data/Hora De Fim',
         name: 'schedule_to',
         type: 'dateTime',
         required: true,
@@ -148,7 +148,7 @@ export const activityFields: INodeProperties[] = [
                 description: 'Observações sobre a atividade',
             },
             {
-                displayName: 'ID do Lead',
+                displayName: 'ID Do Lead',
                 name: 'lead_id',
                 type: 'string',
                 default: '',
@@ -164,7 +164,7 @@ export const activityFields: INodeProperties[] = [
         ],
     },
     {
-        displayName: 'Campos para Atualizar',
+        displayName: 'Update Fields',
         name: 'updateFields',
         type: 'collection',
         placeholder: 'Adicionar Campo',
@@ -184,11 +184,11 @@ export const activityFields: INodeProperties[] = [
                 description: 'Título da atividade',
             },
             {
-                displayName: 'Concluída (is_done)',
+                displayName: 'Concluída (Is_done)',
                 name: 'is_done',
                 type: 'boolean',
                 default: false,
-                description: 'Se a atividade já foi realizada',
+                description: 'Whether the activity is completed',
             },
             {
                 displayName: 'Comentário',
@@ -210,7 +210,7 @@ export const activityFields: INodeProperties[] = [
                 operation: ['getAll'],
             },
         },
-        description: 'Se deve retornar todos os registros usando paginação automática',
+        description: 'Whether to return all results or only up to a given limit',
     },
     {
         displayName: 'Limite',
@@ -227,7 +227,7 @@ export const activityFields: INodeProperties[] = [
                 returnAll: [false],
             },
         },
-        description: 'Quantidade máxima de registros a retornar',
+        description: 'Max number of results to return',
     },
     {
         displayName: 'Filtros',
@@ -243,7 +243,7 @@ export const activityFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Tipo de Atividade',
+                displayName: 'Tipo De Atividade',
                 name: 'type',
                 type: 'options',
                 options: [
@@ -256,14 +256,14 @@ export const activityFields: INodeProperties[] = [
                 description: 'Filtrar por tipo de atividade',
             },
             {
-                displayName: 'Concluída (is_done)',
+                displayName: 'Concluída (Is_done)',
                 name: 'is_done',
                 type: 'boolean',
                 default: false,
-                description: 'Filtrar por atividades concluídas (1) ou pendentes (0)',
+                description: 'Whether to filter by completed activities',
             },
             {
-                displayName: 'ID do Lead',
+                displayName: 'ID Do Lead',
                 name: 'lead_id',
                 type: 'string',
                 default: '',

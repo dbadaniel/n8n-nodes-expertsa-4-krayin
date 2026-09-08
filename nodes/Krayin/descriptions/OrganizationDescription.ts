@@ -13,34 +13,34 @@ export const organizationOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Criar Organização',
-                value: 'create',
-                description: 'Cadastrar uma nova empresa/organização',
-                action: 'Criar uma organização',
-            },
-            {
-                name: 'Obter Organização',
-                value: 'get',
-                description: 'Buscar uma empresa pelo ID',
-                action: 'Obter uma organização',
-            },
-            {
-                name: 'Listar Organizações',
-                value: 'getAll',
-                description: 'Listar empresas com paginação',
-                action: 'Listar organizações',
-            },
-            {
                 name: 'Atualizar Organização',
                 value: 'update',
                 description: 'Atualizar dados de uma empresa',
-                action: 'Atualizar uma organização',
+                action: 'Atualizar uma organiza o',
+            },
+            {
+                name: 'Criar Organização',
+                value: 'create',
+                description: 'Cadastrar uma nova empresa/organização',
+                action: 'Criar uma organiza o',
             },
             {
                 name: 'Excluir Organização',
                 value: 'delete',
                 description: 'Excluir uma empresa pelo ID',
-                action: 'Excluir uma organização',
+                action: 'Excluir uma organiza o',
+            },
+            {
+                name: 'Get Many',
+                value: 'getAll',
+                description: 'Listar empresas com paginação',
+                action: 'Listar organiza es',
+            },
+            {
+                name: 'Obter Organização',
+                value: 'get',
+                description: 'Buscar uma empresa pelo ID',
+                action: 'Obter uma organiza o',
             },
         ],
         default: 'getAll',
@@ -49,7 +49,7 @@ export const organizationOperations: INodeProperties[] = [
 
 export const organizationFields: INodeProperties[] = [
     {
-        displayName: 'ID da Organização',
+        displayName: 'ID Da Organização',
         name: 'organizationId',
         type: 'string',
         required: true,
@@ -63,7 +63,7 @@ export const organizationFields: INodeProperties[] = [
         description: 'O ID numérico da empresa no Krayin CRM',
     },
     {
-        displayName: 'Nome da Empresa',
+        displayName: 'Nome Da Empresa',
         name: 'name',
         type: 'string',
         required: true,
@@ -102,7 +102,7 @@ export const organizationFields: INodeProperties[] = [
         ],
     },
     {
-        displayName: 'Campos para Atualizar',
+        displayName: 'Update Fields',
         name: 'updateFields',
         type: 'collection',
         placeholder: 'Adicionar Campo',
@@ -115,11 +115,10 @@ export const organizationFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Nome da Empresa',
+                displayName: 'Nome Da Empresa',
                 name: 'name',
                 type: 'string',
                 default: '',
-                description: 'Nome da empresa',
             },
             {
                 displayName: 'Endereço',
@@ -144,7 +143,7 @@ export const organizationFields: INodeProperties[] = [
                 operation: ['getAll'],
             },
         },
-        description: 'Se deve retornar todos os registros usando paginação automática',
+        description: 'Whether to return all results or only up to a given limit',
     },
     {
         displayName: 'Limite',
@@ -161,7 +160,7 @@ export const organizationFields: INodeProperties[] = [
                 returnAll: [false],
             },
         },
-        description: 'Quantidade máxima de registros a retornar',
+        description: 'Max number of results to return',
     },
     {
         displayName: 'Filtros',
@@ -177,7 +176,7 @@ export const organizationFields: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'Nome da Empresa',
+                displayName: 'Nome Da Empresa',
                 name: 'name',
                 type: 'string',
                 default: '',

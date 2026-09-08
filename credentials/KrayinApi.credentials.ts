@@ -8,6 +8,7 @@ export class KrayinApi implements ICredentialType {
     name = 'krayinApi';
     displayName = 'Krayin CRM API';
     documentationUrl = 'https://krayincrm.com/';
+    icon = 'file:krayin.svg' as const;
 
     properties: INodeProperties[] = [
         {

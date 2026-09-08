@@ -13,34 +13,34 @@ export const personOperations: INodeProperties[] = [
         },
         options: [
             {
-                name: 'Criar Contato',
-                value: 'create',
-                description: 'Cadastrar uma nova pessoa/contato',
-                action: 'Criar um contato',
-            },
-            {
-                name: 'Obter Contato',
-                value: 'get',
-                description: 'Buscar um contato pelo ID',
-                action: 'Obter um contato',
-            },
-            {
-                name: 'Listar Contatos',
-                value: 'getAll',
-                description: 'Listar contatos com paginação e filtros',
-                action: 'Listar contatos',
-            },
-            {
                 name: 'Atualizar Contato',
                 value: 'update',
                 description: 'Atualizar dados de um contato existente',
                 action: 'Atualizar um contato',
             },
             {
+                name: 'Criar Contato',
+                value: 'create',
+                description: 'Cadastrar uma nova pessoa/contato',
+                action: 'Criar um contato',
+            },
+            {
                 name: 'Excluir Contato',
                 value: 'delete',
                 description: 'Excluir um contato pelo ID',
                 action: 'Excluir um contato',
+            },
+            {
+                name: 'Get Many',
+                value: 'getAll',
+                description: 'Listar contatos com paginação e filtros',
+                action: 'Listar contatos',
+            },
+            {
+                name: 'Obter Contato',
+                value: 'get',
+                description: 'Buscar um contato pelo ID',
+                action: 'Obter um contato',
             },
         ],
         default: 'getAll',
@@ -50,7 +50,7 @@ export const personOperations: INodeProperties[] = [
 export const personFields: INodeProperties[] = [
     // ID do Contato
     {
-        displayName: 'ID do Contato',
+        displayName: 'ID Do Contato',
         name: 'personId',
         type: 'string',
         required: true,
@@ -80,7 +80,7 @@ export const personFields: INodeProperties[] = [
         description: 'Nome da pessoa de contato',
     },
     {
-        displayName: 'E-mail Principal',
+        displayName: 'E-Mail Principal',
         name: 'email',
         type: 'string',
         placeholder: 'nome@exemplo.com',
@@ -108,7 +108,7 @@ export const personFields: INodeProperties[] = [
         description: 'Número de telefone ou WhatsApp',
     },
     {
-        displayName: 'ID da Organização',
+        displayName: 'ID Da Organização',
         name: 'organization_id',
         type: 'string',
         default: '',
@@ -145,7 +145,7 @@ export const personFields: INodeProperties[] = [
 
     // Atualizar Contato
     {
-        displayName: 'Campos para Atualizar',
+        displayName: 'Update Fields',
         name: 'updateFields',
         type: 'collection',
         placeholder: 'Adicionar Campo',
@@ -158,6 +158,28 @@ export const personFields: INodeProperties[] = [
         },
         options: [
             {
+                displayName: 'Cargo (Job Title)',
+                name: 'job_title',
+                type: 'string',
+                default: '',
+                description: 'Cargo da pessoa',
+            },
+            {
+                displayName: 'E-Mail Principal',
+                name: 'email',
+                type: 'string',
+                placeholder: 'name@email.com',
+                default: '',
+                description: 'Endereço de e-mail',
+            },
+            {
+                displayName: 'ID Da Organização',
+                name: 'organization_id',
+                type: 'string',
+                default: '',
+                description: 'Vincular a uma empresa',
+            },
+            {
                 displayName: 'Nome Completo',
                 name: 'name',
                 type: 'string',
@@ -165,32 +187,11 @@ export const personFields: INodeProperties[] = [
                 description: 'Nome da pessoa',
             },
             {
-                displayName: 'E-mail Principal',
-                name: 'email',
-                type: 'string',
-                default: '',
-                description: 'Endereço de e-mail',
-            },
-            {
                 displayName: 'Telefone Principal',
                 name: 'contact_number',
                 type: 'string',
                 default: '',
                 description: 'Número de telefone',
-            },
-            {
-                displayName: 'ID da Organização',
-                name: 'organization_id',
-                type: 'string',
-                default: '',
-                description: 'Vincular a uma empresa',
-            },
-            {
-                displayName: 'Cargo (Job Title)',
-                name: 'job_title',
-                type: 'string',
-                default: '',
-                description: 'Cargo da pessoa',
             },
         ],
     },
@@ -207,7 +208,7 @@ export const personFields: INodeProperties[] = [
                 operation: ['getAll'],
             },
         },
-        description: 'Se deve retornar todos os registros usando paginação automática',
+        description: 'Whether to return all results or only up to a given limit',
     },
     {
         displayName: 'Limite',
@@ -224,7 +225,7 @@ export const personFields: INodeProperties[] = [
                 returnAll: [false],
             },
         },
-        description: 'Quantidade máxima de registros a retornar',
+        description: 'Max number of results to return',
     },
     {
         displayName: 'Filtros',
@@ -247,7 +248,7 @@ export const personFields: INodeProperties[] = [
                 description: 'Filtrar contatos pelo nome',
             },
             {
-                displayName: 'E-mail',
+                displayName: 'E-Mail',
                 name: 'emails',
                 type: 'string',
                 default: '',
