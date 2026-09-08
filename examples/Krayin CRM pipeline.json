@@ -1,0 +1,635 @@
+{
+  "name": "Krayin CRM pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Krayin CRM pipeline\n\n### How it works\n\nThis workflow is a callable Krayin CRM pipeline processor that prepares CRM reference data, checks for an existing contact, then checks for matching leads. Depending on the conditions, it creates a missing contact, updates an existing lead, retrieves product information, and either creates or updates a lead in the appropriate pipeline stage. The layout flows left to right from the workflow trigger through lookup, decision, and final lead write operations.\n\n### Setup steps\n\n- Configure the Krayin credentials on all Krayin nodes so they can access the correct CRM instance.\n- Ensure the calling workflow passes the fields needed for contact lookup, lead lookup, product retrieval, and lead creation or update.\n- Review the IF node conditions to confirm they match your CRM rules for detecting existing contacts, leads, and products.\n- Verify the pipeline, stage, product, contact, and lead field mappings in the Krayin nodes before enabling the workflow.\n\n### Customization\n\nAdjust the IF conditions and Krayin node mappings to match your sales process, such as using different identifiers for contacts/leads or routing new leads to different pipelines and stages.",
+        "height": 880,
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -176
+      ],
+      "id": "4df297fc-44b0-4e4a-a6b9-31c8481da4af",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Start and CRM lookup\n\nReceives the execution from another workflow and loads Krayin pipeline, stage, and contact data needed for the later decisions.",
+        "height": 304,
+        "width": 864,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        496,
+        144
+      ],
+      "id": "c07dac89-9559-4af6-91dd-fe8c7a340d24",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Validate or create contact\n\nChecks whether the relevant contact already exists; if it does not, it creates the contact and loops back to refresh the contact list.",
+        "height": 496,
+        "width": 416,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        32
+      ],
+      "id": "b99e71e5-8656-479e-b465-90f90652a73b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Check existing leads\n\nLists matching leads and branches based on whether an appropriate lead already exists for the contact or pipeline context.",
+        "height": 320,
+        "width": 416,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        -16
+      ],
+      "id": "0aaa9cc1-da57-4f04-98c2-ebe5f03414ec",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Update or fetch product\n\nHandles the first lead decision outcome by either updating an existing lead directly or retrieving product information for the create/update path.",
+        "height": 576,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        -176
+      ],
+      "id": "b7367bab-999a-4572-8746-753721f3450a",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Finalize lead write\n\nUses the product lookup result to decide whether to create a new lead or update a lead through the final Krayin write actions.",
+        "height": 512,
+        "width": 416,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        -16
+      ],
+      "id": "6a3e7a36-d876-4154-95c8-26ef553df515",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "20d22d50-57df-46c1-87fc-37b1a3a6896d",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.isNotEmpty() }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "686780b6-c041-4504-aff2-f5e19b0b456a",
+      "name": "Check Contacts Exist",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1440,
+        192
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Nome"
+            },
+            {
+              "name": "email"
+            },
+            {
+              "name": "telefone"
+            },
+            {
+              "name": "produto"
+            },
+            {
+              "name": "valor"
+            },
+            {
+              "name": "Funil"
+            },
+            {
+              "name": "Stage"
+            },
+            {
+              "name": "Oferta_code"
+            },
+            {
+              "name": "transaction"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      },
+      "id": "8feb98de-874b-4541-8e5a-053b15e08a8f",
+      "name": "Krayin Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        544,
+        272
+      ],
+      "notesInFlow": true,
+      "typeVersion": 1.2,
+      "notes": "tipo - carrinho abandonado , cadastro, Compra Concluida"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "688d96c9-3054-49d8-9a5f-20f7a9327905",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ ($json.lead_products || []).some(item => item?.product?.sku === $node[\"processacrm\"].json[\"Oferta_code\"]) }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "79c69588-9001-4903-a992-7dd663e23331",
+      "name": "Check Lead Products",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2112,
+        144
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "resource": "pipeline",
+        "filters": {
+          "name": "={{ $json.Funil }}"
+        }
+      },
+      "id": "c7f682ef-231b-40da-ad3d-5ce5dc0b9a03",
+      "name": "List Pipelines in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        768,
+        272
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "stage",
+        "pipelineId": "={{ $json.id }}",
+        "filters": {
+          "name": "={{ $('Krayin Workflow Trigger').item.json.Stage }}"
+        }
+      },
+      "id": "1d676acc-85fd-47d1-a4a3-feebec88e2bb",
+      "name": "List Stages in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        992,
+        272
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "person",
+        "filters": {
+          "emails": "={{ $('Krayin Workflow Trigger').item.json.email }}"
+        }
+      },
+      "id": "6aaa6894-5e65-4522-8d1c-9218bff03f07",
+      "name": "List Contacts in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        1216,
+        272
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "limit": 1,
+        "filters": {
+          "person_id": "={{ $json.id }}",
+          "lead_pipeline_id": "={{ $('List Pipelines in Krayin').item.json.id }}"
+        }
+      },
+      "id": "402ac27f-466e-4b19-81ad-ada20fc189e3",
+      "name": "List Leads in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        1888,
+        144
+      ],
+      "executeOnce": false,
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "product",
+        "operation": "get",
+        "productId": "={{ $('Krayin Workflow Trigger').item.json.Oferta_code }}"
+      },
+      "id": "2ecfc6be-f314-4813-ab7c-566711ccbc9f",
+      "name": "Get Product in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        2336,
+        240
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "leadId": "={{ $json.id }}",
+        "productsUi": {
+          "productValues": []
+        },
+        "updateFields": {
+          "lead_pipeline_stage_id": "=19"
+        }
+      },
+      "id": "ced71f2d-0a88-48fc-82e6-ccc5f71a1027",
+      "name": "Update Lead in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        2336,
+        48
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "title": "Lead n8n",
+        "lead_value": "={{ $('Krayin Workflow Trigger').item.json.valor }}",
+        "person_id": "={{ $('List Contacts in Krayin').item.json.id }}",
+        "lead_pipeline_id": "={{ $('List Pipelines in Krayin').item.json.id }}",
+        "lead_pipeline_stage_id": "={{ $('List Stages in Krayin').item.json.id }}",
+        "additionalFields": {},
+        "productsUi": {
+          "productValues": [
+            {
+              "product_id": "={{ $('Get Product in Krayin').item.json.id }}"
+            }
+          ]
+        },
+        "customAttributesUi": {
+          "customAttributeValues": [
+            {
+              "code": "hotmart_status",
+              "value": "={{ $('Krayin Workflow Trigger').item.json.status }}"
+            },
+            {
+              "code": "hotmart_transaction_id",
+              "value": "={{ $('Krayin Workflow Trigger').item.json.transaction }}"
+            }
+          ]
+        }
+      },
+      "id": "3d7d62e5-6219-4f25-a558-76022db078e1",
+      "name": "Create Lead in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        2832,
+        144
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "062d2ba3-f1e6-4eb1-be17-84a7f85fba77",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ !$('List Leads in Krayin').first()?.json?.id }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "257178a5-4891-42ab-9c9a-d0e84999d606",
+      "name": "Check Lead Absence",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2608,
+        240
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "leadId": "={{ $('List Leads in Krayin').item.json.id }}",
+        "productsUi": {
+          "productValues": [
+            {
+              "product_id": "={{ $('Get Product in Krayin').item.json.data[0].id }}"
+            }
+          ]
+        },
+        "updateFields": {
+          "lead_pipeline_stage_id": "19"
+        }
+      },
+      "id": "d0515fdb-44a0-4bc8-94a6-2a09e1500ae5",
+      "name": "Revise Existing Lead",
+      "type": "CUSTOM.krayin",
+      "position": [
+        2832,
+        336
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "person",
+        "operation": "create",
+        "name": "={{ $('Krayin Workflow Trigger').item.json.Nome }}",
+        "email": "={{ $('Krayin Workflow Trigger').item.json.email }}",
+        "contact_number": "={{ $('Krayin Workflow Trigger').item.json.telefone }}",
+        "additionalFields": {}
+      },
+      "id": "ac800f66-3a81-4437-8f47-5780e8dfb5fe",
+      "name": "Create Contact in Krayin",
+      "type": "CUSTOM.krayin",
+      "position": [
+        1664,
+        368
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "krayinApi": {
+          "id": "cbc4RhlU5jolysic",
+          "name": "Krayin CRM account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check Lead Absence": {
+      "main": [
+        [
+          {
+            "node": "Create Lead in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Revise Existing Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Contacts Exist": {
+      "main": [
+        [
+          {
+            "node": "List Leads in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Contact in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Lead Products": {
+      "main": [
+        [
+          {
+            "node": "Update Lead in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Product in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Krayin Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "List Pipelines in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Pipelines in Krayin": {
+      "main": [
+        [
+          {
+            "node": "List Stages in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Leads in Krayin": {
+      "main": [
+        [
+          {
+            "node": "Check Lead Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Contacts in Krayin": {
+      "main": [
+        [
+          {
+            "node": "Check Contacts Exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Contact in Krayin": {
+      "main": [
+        [
+          {
+            "node": "List Contacts in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Stages in Krayin": {
+      "main": [
+        [
+          {
+            "node": "List Contacts in Krayin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Product in Krayin": {
+      "main": [
+        [
+          {
+            "node": "Check Lead Absence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "75c42f5c-0352-4015-8af0-c1295b865dab",
+  "meta": {
+    "instanceId": "d437e0925353617fd4d04d20486ea80933df527c187874f1a44d0e7737454c99"
+  },
+  "nodeGroups": [],
+  "id": "0TrBDesxx1woWStI",
+  "tags": []
+}

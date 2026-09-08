@@ -38,7 +38,8 @@
   },
   "files": [
     "dist",
-    "Exsa-azul.png"
+    "Exsa-azul.png",
+    "examples"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,

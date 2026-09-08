@@ -116,6 +116,25 @@ docker-compose up -d
 
 ---
 
+## 💡 Fluxo de Exemplo (Workflow de Apoio)
+
+Para acelerar a sua implementação, disponibilizamos um **workflow completo de referência pronto para importação** no repositório:
+
+📁 **Arquivo de Exemplo:** [`examples/Krayin CRM pipeline.json`](./examples/Krayin%20CRM%20pipeline.json)
+
+### O que este fluxo de exemplo faz:
+- **Consulta e Normalização:** Busca pipelines, etapas (stages) e produtos no Krayin CRM.
+- **Verificação de Contatos:** Checa se a pessoa (`Person`) já existe no CRM e a cria caso necessário.
+- **Decisão Inteligente de Leads:** Identifica se já existe oportunidade aberta para o cliente ou se deve criar um novo lead.
+- **Transição de Estágios com Preservação:** Demonstra na prática como mover o lead de fase (ex: checkout para venda aprovada) mantendo os produtos existentes e vinculando novas ofertas com facilidade.
+
+> 📥 **Como importar no seu n8n:**
+> 1. Baixe o arquivo [`Krayin CRM pipeline.json`](./examples/Krayin%20CRM%20pipeline.json).
+> 2. No seu n8n, clique no menu de opções no canto superior direito do canvas > **Import from File...**
+> 3. Selecione o arquivo baixado e associe sua credencial do Krayin CRM!
+
+---
+
 ## 🚀 Conheça também: Expertsa Groups
 
 Você gerencia grupos de WhatsApp para seus lançamentos, turmas e comunidades de alunos?
