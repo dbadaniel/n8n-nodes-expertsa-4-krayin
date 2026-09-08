@@ -38,7 +38,7 @@ export class Krayin implements INodeType {
     description: INodeTypeDescription = {
         displayName: 'Krayin CRM',
         name: 'krayin',
-        icon: { light: 'file:krayin.svg', dark: 'file:krayin.svg' },
+        icon: 'file:krayin.svg',
         group: ['transform'],
         version: 1,
         subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',

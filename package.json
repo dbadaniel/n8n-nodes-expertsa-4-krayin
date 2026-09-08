@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-expertsa-4-krayin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "n8n community node for Krayin CRM API integration - Full coverage for Leads, Persons, Organizations, Activities, Products, and Pipelines",
   "keywords": [
     "n8n-community-node-package",
