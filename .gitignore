@@ -22,3 +22,7 @@ npm-debug.log*
 .env
 .env.local
 docker-compose.yml
+
+# Internal Guides
+GUIA_TESTE_ADEQUACAO_N8N.md
+
