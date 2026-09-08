@@ -1,13 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <defs>
-    <linearGradient id="kg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0047BA" />
-      <stop offset="100%" stop-color="#00A3E0" />
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="22" fill="url(#kg)" />
-  <!-- Letra K estilizada em branco -->
-  <path d="M 28 22 L 40 22 L 40 78 L 28 78 Z" fill="#ffffff" />
-  <path d="M 40 52 L 64 22 L 78 22 L 50 56 L 79 78 L 64 78 Z" fill="#ffffff" />
-  <circle cx="73" cy="30" r="5" fill="#FFD100" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" fill="none">
+  <g transform="translate(1.18, -1.4)">
+    <path d="M2.5 16.3102L11.424 25.2343L17.7343 18.924L8.81025 10L2.5 16.3102Z" fill="#0E90D9"/>
+    <path d="M35.1449 16.3102L26.2209 25.2343L19.9106 18.924L28.8346 10L35.1449 16.3102Z" fill="#0E90D9"/>
+    <path d="M12.5654 26.6481L17.19 31.2195C18.9412 32.906 21.7203 32.8799 23.4394 31.1608C25.2048 29.3954 25.1778 26.5249 23.3796 24.793L18.8756 20.3379L12.5654 26.6481Z" fill="#263238"/>
+  </g>
 </svg>
