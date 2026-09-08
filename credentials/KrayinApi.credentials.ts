@@ -16,18 +16,18 @@ export class KrayinApi implements ICredentialType {
             type: 'options',
             options: [
                 {
-                    name: 'Login (Email e Senha)',
+                    name: 'Login (Email e Senha) - Recomendado',
                     value: 'login',
-                    description: 'Autentica via API e obtém o token automaticamente',
+                    description: 'Autentica via API e obtém o token automaticamente (Método funcional e homologado)',
                 },
                 {
-                    name: 'API Token Direto',
+                    name: 'API Token Direto (Em Desenvolvimento)',
                     value: 'apiToken',
-                    description: 'Utiliza um Bearer Token (Sanctum) já gerado',
+                    description: 'Atenção: Opção em desenvolvimento, não funcional no momento. Use Login (Email e Senha)',
                 },
             ],
             default: 'login',
-            description: 'Como o n8n deve autenticar na API do Krayin CRM',
+            description: 'Como o n8n deve autenticar na API do Krayin CRM (Recomenda-se Login)',
         },
         {
             displayName: 'URL Base da Instância',

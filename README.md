@@ -18,7 +18,7 @@ Aqui você encontra coisas que fazem parte do meu dia a dia de infoprodutor e se
 - 🔍 **Busca Inteligente por SKU ou Código de Oferta**: Se você recebe códigos alfanuméricos de plataformas de vendas (Hotmart, Eduzz, Kiwify, etc.), o nó localiza o produto por ID numérico, SKU exato ou busca em catálogo, sem quebrar sua automação com erros 404.
 - 🧩 **Atributos Extras e Customizados Genéricos**: Adicione livremente qualquer campo customizado do seu CRM (ex: `hotmart_status`, `hotmart_transaction_id`, `utm_source`, `cupom`) de forma estruturada pela interface ou via JSON, sem ficar preso a regras engessadas.
 - 🔄 **Consulta Direta de Estágios e Funis**: Busque e filtre estágios por nome ou código para direcionar leads de forma dinâmica entre funis e etapas de venda.
-- 🔑 **Dupla Modalidade de Autenticação**: Suporte nativo tanto para **API Token (Laravel Sanctum)** quanto para **Login direto (E-mail e Senha)** com renovação automática de token em cache na memória.
+- 🔑 **Autenticação Confiável via Login**: Suporte robusto para autenticação via Login direto (E-mail e Senha) com gerenciamento e renovação automática de token em cache na memória.
 
 ---
 
@@ -74,22 +74,20 @@ O nó oferece suporte a todas as entidades principais do Krayin CRM:
 
 No n8n, acesse **Credentials > Add Credential** e procure por **Krayin CRM API**.
 
-Você pode autenticar de duas maneiras:
+### ✅ Opção Recomendada (100% Funcional): Login (E-mail e Senha)
+Esta é a modalidade homologada e recomendada para uso no dia a dia:
+1. No campo **Tipo de Autenticação**, selecione: `Login (Email e Senha) - Recomendado`.
+2. Preencha:
+   - **URL Base da Instância**: A URL da sua instalação do Krayin (ex: `https://crm.suaempresa.com.br`).
+   - **Email do Administrador**: O e-mail do usuário no Krayin CRM.
+   - **Senha**: A senha do usuário.
+3. O nó autentica automaticamente via API e gerencia o token em memória com renovação periódica.
 
-### Opção A: API Token (Recomendado para produção)
-1. No seu Krayin CRM, gere um Bearer Token em **Settings > Users > API Tokens** (Laravel Sanctum).
-2. Na credencial do n8n:
-   - **Tipo de Autenticação**: `API Token (Bearer / Laravel Sanctum)`
-   - **URL Base**: Ex: `https://crm.suaempresa.com.br`
-   - **API Token**: Cole o token gerado.
+---
 
-### Opção B: Login e Senha (E-mail + Senha)
-1. Na credencial do n8n:
-   - **Tipo de Autenticação**: `Login (E-mail e Senha)`
-   - **URL Base**: Ex: `https://crm.suaempresa.com.br`
-   - **E-mail**: Seu e-mail de administrador/usuário do Krayin.
-   - **Senha**: Sua senha de acesso.
-   - O nó gerencia o token em memória com renovação automática quando expirar.
+> ⚠️ **Aviso Importante sobre API Token:**
+> A opção de autenticação via *API Token Direto (Bearer Token / Laravel Sanctum)* ainda está em fase de desenvolvimento e **NÃO está funcionando no momento**. 
+> Para conectar com sucesso e evitar erros de autenticação, **utilize exclusivamente a opção "Login (Email e Senha)"**.
 
 ---
 
