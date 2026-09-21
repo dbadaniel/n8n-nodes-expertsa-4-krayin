@@ -1,160 +1,157 @@
 <div align="center">
   <img src="./Exsa-azul.png" alt="Expertsa" width="480"/>
   <h1>n8n-nodes-expertsa-4-krayin</h1>
-  <p><strong>Integração Completa e Inteligente com o Krayin CRM para n8n</strong></p>
+  <p><strong>Full-featured & Intelligent Krayin CRM Integration for n8n</strong></p>
 </div>
 
-Desenvolvido a partir das dores e necessidades reais de quem gerencia operações digitais no dia a dia. Totalmente preparado para o Krayin CRM.
+Built to address real-world operational challenges in digital sales workflows. Fully optimized for Krayin CRM.
 
 ---
 
-## 🚀 Por que este node é diferente?
+## 🚀 Why is this node different?
 
-Aqui você encontra coisas que fazem parte do meu dia a dia de infoprodutor e sei que pode servir para outros. A maioria das integrações são básicas, mas este node foi construído com problemas e necessidades do mundo real em mente:
+Most CRM integrations are basic wrappers, but this node was engineered specifically to solve real-world pains and production requirements:
 
-- 🛡️ **Preservação Inteligente de Produtos no Lead**: No Krayin CRM padrão, qualquer atualização no lead via API apaga todos os produtos já vinculados se você não reenviar o catálogo completo. Nosso node resolve isso automaticamente: quando você apenas move o lead de estágio (ex: de checkout abandonado para compra aprovada), ele consulta os produtos existentes e os preserva 100% intactos — sem você precisar de nenhum código manual ou expressões de `flatMap`, `reduce` e `JSON.stringify`.
-- ➕ **Mesclagem e Adição de Ofertas sem Atrito**: Precisa adicionar uma nova oferta ou upsell a um lead existente? Basta adicionar o produto informando o ID e a quantidade. O nó anexa a nova oferta mantendo os produtos anteriores e recalculando automaticamente o valor total da oportunidade.
-- 🎯 **Vínculo Simplificado de Produtos**: Chega de ter que montar estruturas aninhadas com nomes e preços decimais manuais (`224.0000`). Você informa apenas o **ID do Produto** e a **Quantidade** — o node busca e preenche o nome e o preço oficial cadastrados diretamente no catálogo do CRM.
-- 🔍 **Busca Inteligente por SKU ou Código de Oferta**: Se você recebe códigos alfanuméricos de plataformas de vendas (Hotmart, Eduzz, Kiwify, etc.), o nó localiza o produto por ID numérico, SKU exato ou busca em catálogo, sem quebrar sua automação com erros 404.
-- 🧩 **Atributos Extras e Customizados Genéricos**: Adicione livremente qualquer campo customizado do seu CRM (ex: `hotmart_status`, `hotmart_transaction_id`, `utm_source`, `cupom`) de forma estruturada pela interface ou via JSON, sem ficar preso a regras engessadas.
-- 🔄 **Consulta Direta de Estágios e Funis**: Busque e filtre estágios por nome ou código para direcionar leads de forma dinâmica entre funis e etapas de venda.
-- 🔑 **Autenticação Confiável via Login**: Suporte robusto para autenticação via Login direto (E-mail e Senha) com gerenciamento e renovação automática de token em cache na memória.
-
----
-
-## 📚 Manual de Uso & Recursos
-
-O nó oferece suporte a todas as entidades principais do Krayin CRM:
-
-### 1. 💼 Leads & Oportunidades
-- **Criar Lead (`create`)**:
-  - Título, valor da oportunidade, contato vinculado (`person_id`), funil e estágio inicial.
-  - **Produtos do Lead**: Adicione um ou múltiplos produtos informando apenas `ID do Produto` e `Quantidade`. Se o valor do lead for deixado zerado, ele calcula automaticamente pela soma dos produtos.
-  - **Atributos Extras**: Adicione campos customizados através de pares `Código` e `Valor`.
-- **Obter Lead (`get`)**: Consulta todos os detalhes do lead pelo ID, incluindo produtos vinculados e contatos.
-- **Listar Leads (`getAll`)**: Suporta filtros por funil (`pipeline_id`), estágio (`stage_id`) ou vendedor (`user_id`), com paginação automática.
-- **Atualizar Lead (`update`)**:
-  - **Mudar apenas de Estágio**: Altere o campo `ID da Fase (Stage)` — todos os produtos existentes são preservados sem esforço.
-  - **Modo de Atualização de Produtos**: Escolha entre `Preservar Existentes e Mesclar Novos (Padrão)`, `Substituir Todos` ou `Remover Todos`.
-  - **Status da Negociação**: Altere entre *Aberto*, *Ganho (Won)* ou *Perdido (Lost)*.
-- **Excluir Lead (`delete`)**: Remove a oportunidade do CRM.
-
-### 2. 📦 Produtos & Serviços
-- **Obter um Produto (`get`)**:
-  - Aceita **ID numérico** (ex: `12`) ou **código alfanumérico / SKU** (ex: `9t67pevq`).
-  - Retorno limpo e padronizado diretamente no primeiro nível do JSON para fácil mapeamento (`$json.id`, `$json.price`, `$json.name`).
-- **Listar Produtos (`getAll`)**: Filtre produtos por SKU ou nome com paginação automática.
-- **Criar Produto (`create`)**: Cadastre novos itens com nome, SKU, preço e descrição.
-- **Atualizar & Excluir Produtos**: Mantenha seu catálogo sempre sincronizado.
-
-### 3. 👤 Contatos (Pessoas)
-- **Criar Contato (`create`)**: Cadastre novas pessoas com e-mails, telefones, cargo e vínculo à empresa.
-- **Obter Contato (`get`)**: Obtenha dados de contato por ID.
-- **Listar Contatos (`getAll`)**: Filtre por nome ou liste todos os contatos.
-- **Atualizar & Excluir Contatos**.
-
-### 4. 🏢 Empresas (Organizações)
-- **Criar Organização (`create`)**: Cadastre empresas/clientes PJ com endereço completo.
-- **Obter & Listar Organizações**: Consulte empresas vinculadas aos seus contatos e oportunidades.
-- **Atualizar & Excluir Organizações**.
-
-### 5. 📅 Atividades & Compromissos
-- **Criar Atividade (`create`)**: Agende tarefas (*Ligação, Reunião, Almoço, Anotação*) com data de início e fim, associadas ao lead.
-- **Listar Atividades (`getAll`)**: Acompanhe o histórico de atividades pendentes ou concluídas.
-- **Atualizar Atividade (`update`)**: Marque como concluída (`is_done`) ou edite notas.
-- **Excluir Atividade (`delete`)**.
-
-### 6. 📊 Funis de Vendas & Estágios (Pipelines & Stages)
-- **Funil (`pipeline`)**: Liste todos os funis de vendas cadastrados no CRM.
-- **Estágio (`stage`)**: Consulte estágios com filtros por `ID do Funil`, `Nome do Estágio` ou `Código do Estágio` (ex: `won`, `lost`).
+- 🛡️ **Intelligent Lead Product Preservation**: In standard Krayin CRM API updates, modifying a lead wipes out all attached products unless you resend the entire catalog array. Our node handles this seamlessly: when moving a lead between stages (e.g. from abandoned checkout to approved purchase), it queries existing products and preserves them 100% intact — without requiring custom code or complex `flatMap`, `reduce`, or `JSON.stringify` expressions.
+- ➕ **Frictionless Offer Merging & Upsells**: Need to add an upsell or new product offer to an existing lead? Simply provide the Product ID and Quantity. The node appends the new offer while keeping previous products and automatically recalculates the total opportunity value.
+- 🎯 **Simplified Product Attachment**: No need to manually construct nested payloads with floating-point decimals (`224.0000`). Specify just the **Product ID** and **Quantity** — the node looks up and populates the official name and unit price directly from your CRM catalog.
+- 🔍 **Smart Lookup by SKU or Offer Code**: If your sales platforms (Hotmart, Stripe, Shopify, Eduzz, Kiwify, etc.) send alphanumeric offer codes, the node locates the product by numeric ID, exact SKU, or catalog search without crashing your workflow on 404 errors.
+- 🧩 **Custom & Extra Attributes**: Easily pass any custom fields defined in your CRM (e.g., `hotmart_status`, `transaction_id`, `utm_source`, `coupon`) structured via the UI or as raw JSON without rigid schema restrictions.
+- 🔄 **Direct Pipeline & Stage Filtering**: Query and filter stages by name or code to dynamically route leads across sales pipelines.
+- 🔑 **Reliable Login-Based Authentication**: Robust support for direct Login authentication (Email & Password) with automated in-memory token caching and periodic refresh.
 
 ---
 
-## 🔐 Configuração de Credenciais
+## 📚 Features & Operations Guide
 
-No n8n, acesse **Credentials > Add Credential** e procure por **Krayin CRM API**.
+This node supports all core Krayin CRM resources:
 
-### ✅ Opção Recomendada (100% Funcional): Login (E-mail e Senha)
-Esta é a modalidade homologada e recomendada para uso no dia a dia:
-1. No campo **Tipo de Autenticação**, selecione: `Login (Email e Senha) - Recomendado`.
-2. Preencha:
-   - **URL Base da Instância**: A URL da sua instalação do Krayin (ex: `https://crm.suaempresa.com.br`).
-   - **Email do Administrador**: O e-mail do usuário no Krayin CRM.
-   - **Senha**: A senha do usuário.
-3. O nó autentica automaticamente via API e gerencia o token em memória com renovação periódica.
+### 1. 💼 Leads & Opportunities
+- **Create Lead (`create`)**:
+  - Title, opportunity value, linked contact (`person_id`), pipeline, and initial stage.
+  - **Lead Products**: Add one or multiple products specifying just `Product ID` and `Quantity`. If the lead value is left as 0, it is automatically calculated from the products sum.
+  - **Custom Attributes**: Add custom attributes via `Code` and `Value` pairs or advanced JSON.
+- **Get Lead (`get`)**: Fetch comprehensive lead details by ID, including attached products and contacts.
+- **Get Many Leads (`getAll`)**: Filter leads by pipeline (`pipeline_id`), stage (`stage_id`), or assigned user (`user_id`), with automatic pagination.
+- **Update Lead (`update`)**:
+  - **Stage Transitions**: Change the `Stage ID` — all existing products are preserved automatically.
+  - **Product Update Mode**: Choose between `Preserve Existing and Add New (Default)`, `Replace All (Overwrite)`, or `Clear All Products`.
+  - **Deal Status**: Switch between *Open*, *Won*, or *Lost*.
+- **Delete Lead (`delete`)**: Remove the lead opportunity from CRM.
+
+### 2. 📦 Products & Services
+- **Get Product (`get`)**:
+  - Accepts **numeric ID** (e.g. `12`) or **alphanumeric code / SKU** (e.g. `9t67pevq`).
+  - Standardized top-level response for clean n8n mapping (`$json.id`, `$json.price`, `$json.name`).
+- **Get Many Products (`getAll`)**: Filter products by SKU or name with automatic pagination.
+- **Create Product (`create`)**: Register new products with name, SKU, price, and description.
+- **Update & Delete Products**: Keep your product catalog synchronized.
+
+### 3. 👤 Contacts (Persons)
+- **Create Contact (`create`)**: Add contacts with email, phone numbers, job title, and organization link.
+- **Get Contact (`get`)**: Retrieve contact details by ID.
+- **Get Many Contacts (`getAll`)**: Search by name or email, or list all contacts.
+- **Update & Delete Contacts**.
+
+### 4. 🏢 Organizations (Companies)
+- **Create Organization (`create`)**: Add company profiles with full address information.
+- **Get & Get Many Organizations**: View companies associated with your contacts and opportunities.
+- **Update & Delete Organizations**.
+
+### 5. 📅 Activities (Tasks & Calendar)
+- **Create Activity (`create`)**: Schedule calls, meetings, lunches, or notes with start/end timestamps linked to a lead.
+- **Get Many Activities (`getAll`)**: Track pending and completed activities.
+- **Update Activity (`update`)**: Mark as completed (`is_done`) or update notes.
+- **Delete Activity (`delete`)**.
+
+### 6. 📊 Sales Pipelines & Stages
+- **Pipeline (`pipeline`)**: List all sales pipelines configured in your CRM.
+- **Stage (`stage`)**: Retrieve pipeline stages with filters by `Pipeline ID`, `Stage Name`, or `Stage Code` (e.g. `won`, `lost`).
 
 ---
 
-> ⚠️ **Aviso Importante sobre API Token:**
-> A opção de autenticação via *API Token Direto (Bearer Token / Laravel Sanctum)* ainda está em fase de desenvolvimento e **NÃO está funcionando no momento**. 
-> Para conectar com sucesso e evitar erros de autenticação, **utilize exclusivamente a opção "Login (Email e Senha)"**.
+## 🔐 Credential Setup
+
+In n8n, navigate to **Credentials > Add Credential** and search for **Krayin CRM API**.
+
+### ✅ Recommended Option: Login (Email & Password)
+This is the production-tested and recommended authentication method:
+1. In **Authentication Type**, select: `Login (Email & Password) - Recommended`.
+2. Fill in:
+   - **Base URL**: Your Krayin instance URL (e.g. `https://crm.yourdomain.com`).
+   - **Email**: Administrator/user email in Krayin CRM.
+   - **Password**: User password.
+3. The node automatically logs in via API and manages Bearer tokens in memory with periodic renewal.
 
 ---
 
-## 🛠️ Instalação
+> ⚠️ **Note regarding direct API Token:**
+> Direct Bearer API Token authentication (Laravel Sanctum) is currently in development. For reliable connections, please use the **"Login (Email & Password)"** option.
 
-### Instalação no n8n (Community Node)
-1. No seu n8n, vá em **Settings** > **Community Nodes**.
-2. Clique em **Install a community node**.
-3. No campo **npm Package Name**, digite:
+---
+
+## 🛠️ Installation
+
+### In n8n (Community Node)
+1. In your n8n instance, go to **Settings** > **Community Nodes**.
+2. Click **Install a community node**.
+3. In the **npm Package Name** field, enter:
 ```bash
 n8n-nodes-expertsa-4-krayin
 ```
-4. Aceite os termos de risco e clique em **Install**.
+4. Accept the risk agreement and click **Install**.
 
-### Build Local e Desenvolvimento
+### Local Development & Build
 ```bash
-# 1. Clonar o repositório e instalar dependências
+# 1. Install dependencies
 npm install
 
-# 2. Compilar TypeScript e ativos
+# 2. Build TypeScript and copy assets
 npm run build
 
-# 3. Subir o ambiente local do n8n via Docker
+# 3. Spin up local n8n via Docker
 docker-compose up -d
 ```
 
 ---
 
-## 💡 Fluxo de Exemplo (Workflow de Apoio)
+## 💡 Example Workflow
 
-Para acelerar a sua implementação, disponibilizamos um **workflow completo de referência pronto para importação** no repositório:
+To accelerate your integration, a **ready-to-import reference workflow** is provided in this repository:
 
-📁 **Arquivo de Exemplo:** [`examples/Krayin CRM pipeline.json`](./examples/Krayin%20CRM%20pipeline.json)
+📁 **Example file:** [`examples/Krayin CRM pipeline.json`](./examples/Krayin%20CRM%20pipeline.json)
 
-### O que este fluxo de exemplo faz:
-- **Consulta e Normalização:** Busca pipelines, etapas (stages) e produtos no Krayin CRM.
-- **Verificação de Contatos:** Checa se a pessoa (`Person`) já existe no CRM e a cria caso necessário.
-- **Decisão Inteligente de Leads:** Identifica se já existe oportunidade aberta para o cliente ou se deve criar um novo lead.
-- **Transição de Estágios com Preservação:** Demonstra na prática como mover o lead de fase (ex: checkout para venda aprovada) mantendo os produtos existentes e vinculando novas ofertas com facilidade.
+### What this example workflow demonstrates:
+- **Discovery & Normalization:** Retrieves pipelines, stages, and products from Krayin CRM.
+- **Contact Verification:** Checks if the contact person exists in CRM and creates it if not.
+- **Smart Lead Routing:** Identifies existing open deals for the contact or creates a new lead.
+- **Stage Transition with Product Preservation:** Moves the lead through stages (e.g. checkout to approved sale) while retaining existing products and attaching new offers.
 
-> 📥 **Como importar no seu n8n:**
-> 1. Baixe o arquivo [`Krayin CRM pipeline.json`](./examples/Krayin%20CRM%20pipeline.json).
-> 2. No seu n8n, clique no menu de opções no canto superior direito do canvas > **Import from File...**
-> 3. Selecione o arquivo baixado e associe sua credencial do Krayin CRM!
-
----
-
-## 🚀 Conheça também: Expertsa Groups
-
-Você gerencia grupos de WhatsApp para seus lançamentos, turmas e comunidades de alunos?
-
-Conheça o **Expertsa Groups** — o sistema definitivo de gerenciamento e automação de grupos de WhatsApp, desenvolvido de expert para expert para escalar a sua operação de infoprodutos com tranquilidade e controle total.
-
-> 📲 Quer saber mais e otimizar a gestão dos seus grupos? Acesse [expertsa.com.br](https://expertsa.com.br).
+> 📥 **How to import in your n8n:**
+> 1. Download [`Krayin CRM pipeline.json`](./examples/Krayin%20CRM%20pipeline.json).
+> 2. In your n8n workflow canvas, open the top-right menu > **Import from File...**
+> 3. Select the file and link your Krayin CRM credentials!
 
 ---
 
-## ☕ Apoie o Projeto
+## 🚀 Also check out: Expertsa Groups
 
-Este node é mantido com dedicação por quem vive os desafios reais de grandes operações digitais. Se ele economizou horas do seu trabalho ou permitiu que você ganhasse dinheiro automatizando processos, considere apoiar:
+Managing WhatsApp groups for launches, cohorts, and student communities?
 
-**Chave Pix:** `expertsa.oficial@gmail.com`
+Check out **Expertsa Groups** — an advanced WhatsApp group management and automation platform built for digital operators to scale with peace of mind.
 
-Qualquer valor ajuda a manter as atualizações constantes e a paridade com a API oficial da Hotmart! 💜
+> 📲 Learn more at [expertsa.com.br](https://expertsa.com.br).
 
 ---
 
-## 📄 Licença
+## ☕ Support the Project
 
-Distribuído sob a licença **MIT**. Desenvolvido com ❤️ pela [Expertsa](https://expertsa.com.br).
+This node is actively maintained to solve real operational bottlenecks. If it saved you development hours or streamlined your automations, consider supporting:
+
+**Pix key:** `expertsa.oficial@gmail.com`
+
+---
+
+## 📄 License
+
+Distributed under the **MIT** License. Built with ❤️ by [Expertsa](https://expertsa.com.br).

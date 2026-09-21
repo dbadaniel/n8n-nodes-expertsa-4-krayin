@@ -101,31 +101,31 @@ export class Krayin implements INodeType {
                 default: 'lead',
             },
 
-            // Operações e Campos de Leads
+            // Operations and Fields for Leads
             ...leadOperations,
             ...leadFields,
 
-            // Operações e Campos de Persons
+            // Operations and Fields for Persons
             ...personOperations,
             ...personFields,
 
-            // Operações e Campos de Organizations
+            // Operations and Fields for Organizations
             ...organizationOperations,
             ...organizationFields,
 
-            // Operações e Campos de Activities
+            // Operations and Fields for Activities
             ...activityOperations,
             ...activityFields,
 
-            // Operações e Campos de Products
+            // Operations and Fields for Products
             ...productOperations,
             ...productFields,
 
-            // Operações e Campos de Pipelines
+            // Operations and Fields for Pipelines
             ...pipelineOperations,
             ...pipelineFields,
 
-            // Operações e Campos de Stages
+            // Operations and Fields for Stages
             ...stageOperations,
             ...stageFields,
         ],
@@ -142,7 +142,7 @@ export class Krayin implements INodeType {
                 let responseData: any;
 
                 // ============================================================
-                // RECURSO: LEAD (OPORTUNIDADES)
+                // RESOURCE: LEAD (OPPORTUNITIES)
                 // ============================================================
                 if (resource === 'lead') {
                     if (operation === 'create') {
@@ -167,7 +167,7 @@ export class Krayin implements INodeType {
                         }
                         if (lead_pipeline_id) body.lead_pipeline_id = lead_pipeline_id;
 
-                        // 1. Produtos estruturados via UI (ID do produto, quantidade, etc.)
+                        // 1. Structured products via UI (Product ID, quantity, etc.)
                         const productsUi = this.getNodeParameter('productsUi', i, {}) as {
                             productValues?: Array<{
                                 product_id: string;
@@ -200,7 +200,7 @@ export class Krayin implements INodeType {
                             }
                         }
 
-                        // 2. Produtos via JSON avançado
+                        // 2. Products via advanced JSON
                         const rawProducts = additionalFields.productsJson || additionalFields.products;
                         delete (body as any).productsJson;
                         if (rawProducts) {
@@ -213,7 +213,7 @@ export class Krayin implements INodeType {
                             }
                         }
 
-                        // Se lead_value for 0 ou não informado, mas produtos foram informados, calcula o lead_value a partir dos produtos
+                        // If lead_value is 0 or not provided, but products were provided, calculate lead_value from products
                         if ((!body.lead_value || Number(body.lead_value) === 0) && body.products && typeof body.products === 'object') {
                             let totalVal = 0;
                             for (const prod of Object.values(body.products as Record<string, any>)) {
@@ -224,7 +224,7 @@ export class Krayin implements INodeType {
                             }
                         }
 
-                        // 3. Atributos extras/personalizados estruturados via UI (código e valor livre)
+                        // 3. Extra/custom attributes structured via UI (code and freeform value)
                         const customAttributesUi = this.getNodeParameter('customAttributesUi', i, {}) as {
                             customAttributeValues?: Array<{
                                 code: string;
@@ -239,12 +239,17 @@ export class Krayin implements INodeType {
                             }
                         }
 
-                        // 4. Atributos extras em JSON avançado
+                        // 4. Extra attributes in advanced JSON
                         const customJson = additionalFields.customAttributesJson || additionalFields.customFieldsJson;
                         if (customJson) {
                             let custom = customJson;
                             if (typeof custom === 'string') {
-                                try { custom = JSON.parse(custom); } catch {}
+                                try {
+                                    custom = JSON.parse(custom);
+                                } catch {
+                                    // Fallback to empty object if custom attributes JSON parsing fails
+                                    custom = {};
+                                }
                             }
                             if (custom && typeof custom === 'object') {
                                 Object.assign(body, custom);
@@ -275,11 +280,11 @@ export class Krayin implements INodeType {
                         const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
                         const body: IDataObject = { ...updateFields };
 
-                        // Determina o modo de atualização de produtos (padrão: preserveAndAdd)
+                        // Determine product update mode (default: preserveAndAdd)
                         const productUpdateMode = (updateFields.productUpdateMode as string) || 'preserveAndAdd';
                         delete body.productUpdateMode;
 
-                        // 1. Produtos estruturados via UI
+                        // 1. Structured products via UI
                         const productsUi = this.getNodeParameter('productsUi', i, {}) as {
                             productValues?: Array<{
                                 product_id: string;
@@ -290,19 +295,19 @@ export class Krayin implements INodeType {
                             }>;
                         };
 
-                        // 2. Produtos via JSON avançado
+                        // 2. Products via advanced JSON
                         const rawProductsJson = updateFields.productsJson || updateFields.products;
                         delete body.productsJson;
                         delete body.products;
 
-                        // Gerenciamento de Produtos conforme productUpdateMode
+                        // Manage products according to productUpdateMode
                         if (productUpdateMode === 'clear') {
                             body.products = {};
                         } else {
                             const mergedProducts: Record<string, any> = {};
                             let currentLead: any = null;
 
-                            // No modo 'preserveAndAdd', busca o lead atual no CRM para preservar os produtos existentes
+                            // In 'preserveAndAdd' mode, fetch the current lead from CRM to preserve existing products
                             if (productUpdateMode === 'preserveAndAdd') {
                                 try {
                                     const leadRes = await krayinApiRequest.call(this, 'GET', `/api/v1/leads/${leadId}`);
@@ -317,7 +322,7 @@ export class Krayin implements INodeType {
                                         for (const ep of existingProducts) {
                                             const pId = String(ep.product_id || ep.product?.id || ep.id || '').trim();
                                             if (pId) {
-                                                const pName = ep.name || ep.product?.name || `Produto ${pId}`;
+                                                const pName = ep.name || ep.product?.name || `Product ${pId}`;
                                                 const pQty = Number(ep.quantity) > 0 ? Number(ep.quantity) : 1;
                                                 const pPrice = Number(ep.price !== undefined && ep.price !== null ? ep.price : (ep.product?.price || 0));
                                                 const pAmount = Number(ep.amount !== undefined && ep.amount !== null ? ep.amount : (pPrice * pQty));
@@ -340,7 +345,7 @@ export class Krayin implements INodeType {
                                 }
                             }
 
-                            // Mescla os novos produtos vindos da UI
+                            // Merge new products coming from UI
                             let hasNewProducts = false;
                             let addedProductsAmount = 0;
 
@@ -369,7 +374,7 @@ export class Krayin implements INodeType {
                                 }
                             }
 
-                            // Mescla os novos produtos vindos de JSON
+                            // Merge new products coming from JSON
                             if (rawProductsJson) {
                                 const formatted = formatLeadProducts(rawProductsJson);
                                 if (formatted) {
@@ -387,15 +392,15 @@ export class Krayin implements INodeType {
                                 body.products = {};
                             }
 
-                            // Se novos produtos foram adicionados e lead_value não foi explicitamente passado nos updateFields,
-                            // atualiza o lead_value somando o valor atual + novos produtos
+                            // If new products were added and lead_value was not explicitly passed in updateFields,
+                            // update lead_value by adding current lead value + new products
                             if (hasNewProducts && body.lead_value === undefined && currentLead) {
                                 const currentLeadValue = Number(currentLead.lead_value || 0);
                                 body.lead_value = currentLeadValue + addedProductsAmount;
                             }
                         }
 
-                        // 3. Atributos extras estruturados via UI
+                        // 3. Extra attributes structured via UI
                         const customAttributesUi = this.getNodeParameter('customAttributesUi', i, {}) as {
                             customAttributeValues?: Array<{
                                 code: string;
@@ -410,12 +415,17 @@ export class Krayin implements INodeType {
                             }
                         }
 
-                        // 4. Atributos extras em JSON avançado
+                        // 4. Extra attributes in advanced JSON
                         const customJson = updateFields.customAttributesJson || updateFields.customFieldsJson;
                         if (customJson) {
                             let custom = customJson;
                             if (typeof custom === 'string') {
-                                try { custom = JSON.parse(custom); } catch {}
+                                try {
+                                    custom = JSON.parse(custom);
+                                } catch {
+                                    // Fallback to empty object if custom attributes JSON parsing fails
+                                    custom = {};
+                                }
                             }
                             if (custom && typeof custom === 'object') {
                                 Object.assign(body, custom);
@@ -432,7 +442,7 @@ export class Krayin implements INodeType {
                 }
 
                 // ============================================================
-                // RECURSO: PERSON (CONTATOS)
+                // RESOURCE: PERSON (CONTACTS)
                 // ============================================================
                 else if (resource === 'person') {
                     if (operation === 'create') {
@@ -468,7 +478,7 @@ export class Krayin implements INodeType {
                         if (targetEmail || targetName) {
                             const searchTerm = targetEmail || targetName;
 
-                            // 1. Tenta endpoint de busca /search com LIKE do Prettus RequestCriteria
+                            // 1. Try search endpoint /search with Prettus RequestCriteria LIKE
                             try {
                                 const searchRes = await krayinApiRequest.call(
                                     this,
@@ -487,8 +497,8 @@ export class Krayin implements INodeType {
                                 rawPersons = [];
                             }
 
-                            // 2. Se a busca /search não encontrou (ex: campo JSON no MySQL ou permissão),
-                            // busca todos os contatos do CRM (com pagination=0 ou paginação completa)
+                            // 2. If /search did not find anything (e.g. JSON field in MySQL or permissions),
+                            // fetch all CRM contacts (with pagination=0 or full pagination)
                             if (rawPersons.length === 0) {
                                 try {
                                     const fullRes = await krayinApiRequest.call(
@@ -508,7 +518,7 @@ export class Krayin implements INodeType {
                                 }
                             }
 
-                            // 3. Validação e filtragem precisa em memória
+                            // 3. Precise in-memory validation and filtering
                             responseData = rawPersons.filter((person: any) => {
                                 if (targetEmail) {
                                     const lowerTargetEmail = targetEmail.toLowerCase();
@@ -578,7 +588,7 @@ export class Krayin implements INodeType {
                 }
 
                 // ============================================================
-                // RECURSO: ORGANIZATION (EMPRESAS)
+                // RESOURCE: ORGANIZATION (COMPANIES)
                 // ============================================================
                 else if (resource === 'organization') {
                     if (operation === 'create') {
@@ -630,7 +640,7 @@ export class Krayin implements INodeType {
                 }
 
                 // ============================================================
-                // RECURSO: ACTIVITY (ATENÇÃO / TAREFAS / COMPROMISSOS)
+                // RESOURCE: ACTIVITY (TASKS / MEETINGS / CALLS)
                 // ============================================================
                 else if (resource === 'activity') {
                     if (operation === 'create') {
@@ -676,7 +686,7 @@ export class Krayin implements INodeType {
                 }
 
                 // ============================================================
-                // RECURSO: PRODUCT (PRODUTOS / SERVIÇOS)
+                // RESOURCE: PRODUCT (PRODUCTS / SERVICES)
                 // ============================================================
                 else if (resource === 'product') {
                     if (operation === 'create') {
@@ -699,22 +709,22 @@ export class Krayin implements INodeType {
                         if (!productId || productId === 'null' || productId === 'undefined') {
                             throw new NodeOperationError(
                                 this.getNode(),
-                                `O parâmetro 'ID ou SKU do Produto' está vazio ou retornou nulo (null). ` +
-                                `Verifique se o campo existe no nó anterior. Dica: no n8n use "$('processacrm').first().json.Oferta_code" ` +
-                                `ou "$node['processacrm'].json['Oferta_code']" para garantir que o valor não venha nulo.`,
+                                `The 'Product ID or SKU' parameter is empty or returned null. ` +
+                                `Verify that the field exists in the previous node. Tip: in n8n use "$('processacrm').first().json.Oferta_code" ` +
+                                `or "$node['processacrm'].json['Oferta_code']" to ensure the value is not null.`,
                                 { itemIndex: i },
                             );
                         }
 
                         let product: any = null;
 
-                        // 1. Se for numérico puro (apenas dígitos), busca diretamente por ID (/products/{id})
+                        // 1. If purely numeric (digits only), fetch directly by ID (/products/{id})
                         if (/^\d+$/.test(productId)) {
                             try {
                                 const res = await krayinApiRequest.call(this, 'GET', `/api/v1/products/${productId}`);
                                 product = res?.data && !Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res[0] : res);
                             } catch (error: any) {
-                                // Se der 404 por ID, tenta buscar por SKU (caso exista algum produto com SKU puramente numérico)
+                                // If 404 by ID, try searching by SKU (in case a product has a purely numeric SKU)
                                 try {
                                     const skuRes = await krayinApiRequest.call(this, 'GET', '/api/v1/products', {}, { sku: productId });
                                     const list = Array.isArray(skuRes) ? skuRes : skuRes?.data || [];
@@ -722,18 +732,18 @@ export class Krayin implements INodeType {
                                         product = list[0];
                                     }
                                 } catch {
-                                    // Mantém erro original se nem por SKU encontrou
+                                    // Retain original error if not found by SKU either
                                 }
                                 if (!product) {
                                     throw new NodeApiError(this.getNode(), error as JsonObject);
                                 }
                             }
                         } else {
-                            // 2. Se for texto ou código alfanumérico (ex: código de oferta '9d5ejnqr'): busca por SKU
+                            // 2. If text or alphanumeric code (e.g. offer code '9d5ejnqr'): search by SKU
                             const skuRes = await krayinApiRequest.call(this, 'GET', '/api/v1/products', {}, { sku: productId });
                             let list = Array.isArray(skuRes) ? skuRes : skuRes?.data || [];
 
-                            // Se a busca direta por ?sku= não retornou, tenta o endpoint de busca
+                            // If direct search by ?sku= returned nothing, try search endpoint
                             if (list.length === 0) {
                                 try {
                                     const searchRes = await krayinApiRequest.call(this, 'GET', '/api/v1/products', {}, { search: productId });
@@ -743,7 +753,7 @@ export class Krayin implements INodeType {
                                 }
                             }
 
-                            // Se ainda não encontrou, busca todos os produtos e faz busca em memória (case-insensitive)
+                            // If still not found, fetch all products and filter in-memory (case-insensitive)
                             if (list.length === 0) {
                                 try {
                                     const allProds = await krayinApiRequestAllItems.call(this, '/api/v1/products');
@@ -766,7 +776,7 @@ export class Krayin implements INodeType {
                             } else {
                                 throw new NodeOperationError(
                                     this.getNode(),
-                                    `Nenhum produto encontrado no Krayin CRM com o SKU ou código: "${productId}".`,
+                                    `No product found in Krayin CRM with SKU or code: "${productId}".`,
                                     { itemIndex: i },
                                 );
                             }
@@ -855,7 +865,7 @@ export class Krayin implements INodeType {
                 }
 
                 // ============================================================
-                // RECURSO: PIPELINE (FUNIS E ESTÁGIOS)
+                // RESOURCE: PIPELINE (PIPELINES AND STAGES)
                 // ============================================================
                 else if (resource === 'pipeline') {
                     if (operation === 'get') {
@@ -874,7 +884,7 @@ export class Krayin implements INodeType {
                 }
 
                 // ============================================================
-                // RECURSO: STAGE (ESTÁGIOS DO FUNIL)
+                // RESOURCE: STAGE (PIPELINE STAGES)
                 // ============================================================
                 else if (resource === 'stage') {
                     if (operation === 'getAll') {
@@ -889,7 +899,7 @@ export class Krayin implements INodeType {
                     }
                 }
 
-                // Normaliza o retorno em itens do n8n
+                // Normalize return data into n8n execution items
                 if (Array.isArray(responseData)) {
                     for (const entry of responseData) {
                         returnData.push({ json: entry, pairedItem: { item: i } });
@@ -986,7 +996,7 @@ function formatLeadProducts(input: any): Record<string, any> | undefined {
 
     const formatItem = (it: Record<string, any>, defaultId: string | number) => {
         const pId = String(it.product_id || it.product?.id || it.id || defaultId).trim();
-        const pName = it.name || it.product?.name || `Produto ${pId}`;
+        const pName = it.name || it.product?.name || `Product ${pId}`;
         const pQty = Number(it.quantity) > 0 ? Number(it.quantity) : 1;
         const rawPrice = Number(it.price !== undefined && it.price !== null ? it.price : (it.product?.price || 0));
         const rawAmount = Number(it.amount !== undefined && it.amount !== null ? it.amount : (rawPrice * pQty));
@@ -999,9 +1009,9 @@ function formatLeadProducts(input: any): Record<string, any> | undefined {
         };
     };
 
-    // Caso 1: Já é um objeto/dicionário
+    // Case 1: Already an object/dictionary
     if (!Array.isArray(parsed)) {
-        // Se for um único produto (ex: saída de "Obter um produto": { id: 6, name: "...", price: 224 })
+        // If single product (e.g. output from "Get a product": { id: 6, name: "...", price: 224 })
         if (parsed.id || parsed.product_id || parsed.product?.id) {
             const item = formatItem(parsed, parsed.product_id || parsed.id);
             return {
@@ -1009,7 +1019,7 @@ function formatLeadProducts(input: any): Record<string, any> | undefined {
             };
         }
 
-        // Se já for um dicionário de produtos, normaliza as chaves para 'product_X'
+        // If already a dictionary of products, normalize keys to 'product_X'
         const result: Record<string, any> = {};
         for (const [key, item] of Object.entries(parsed)) {
             if (item && typeof item === 'object') {
@@ -1021,7 +1031,7 @@ function formatLeadProducts(input: any): Record<string, any> | undefined {
         return Object.keys(result).length > 0 ? result : undefined;
     }
 
-    // Caso 2: É um Array de produtos [ { product_id: 6, name: "...", ... } ]
+    // Case 2: Array of products [ { product_id: 6, name: "...", ... } ]
     if (Array.isArray(parsed)) {
         const result: Record<string, any> = {};
         for (let idx = 0; idx < parsed.length; idx++) {
@@ -1045,7 +1055,7 @@ async function resolveProductDetails(
     let name = '';
     let price = 0;
 
-    // 1. Tenta pegar do item de entrada atual se corresponder ao ID
+    // 1. Try getting from current input item if it matches the ID
     if (fallbackItemJson && (String(fallbackItemJson.id) === productId || String(fallbackItemJson.product_id) === productId)) {
         if (fallbackItemJson.name) name = String(fallbackItemJson.name);
         if (fallbackItemJson.price !== undefined && fallbackItemJson.price !== null) {
@@ -1053,7 +1063,7 @@ async function resolveProductDetails(
         }
     }
 
-    // 2. Se não encontrou nome ou preço válido (> 0), busca o produto diretamente na API do CRM
+    // 2. If no valid name or price (> 0) was found, fetch product directly from CRM API
     if (!name || price <= 0) {
         try {
             const prodRes = await krayinApiRequest.call(this, 'GET', `/api/v1/products/${productId}`);
@@ -1070,7 +1080,7 @@ async function resolveProductDetails(
     }
 
     return {
-        name: name || `Produto ${productId}`,
+        name: name || `Product ${productId}`,
         price: price > 0 ? price : 0,
     };
 }

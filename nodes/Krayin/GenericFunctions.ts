@@ -18,7 +18,7 @@ export interface IKrayinCredentials {
     apiToken?: string;
 }
 
-// Cache em memória para tokens obtidos via login: cacheKey -> { token, expiresAt, workingLoginPath }
+// In-memory cache for tokens obtained via login: cacheKey -> { token, expiresAt, workingLoginPath }
 interface ITokenCacheItem {
     token: string;
     expiresAt: number;
@@ -27,14 +27,14 @@ interface ITokenCacheItem {
 const tokenCache: Map<string, ITokenCacheItem> = new Map();
 
 /**
- * Normaliza a URL base removendo barras finais
+ * Normalizes the base URL by stripping trailing slashes
  */
 export function normalizeBaseUrl(baseUrl: string): string {
     return (baseUrl || '').trim().replace(/\/+$/, '');
 }
 
 /**
- * Obtém ou renova o token de autenticação (usando Bearer direto ou via Login)
+ * Obtains or refreshes the authentication token (using direct Bearer or via Login)
  */
 export async function getAuthToken(
     context: IExecuteFunctions | ILoadOptionsFunctions,
@@ -46,16 +46,16 @@ export async function getAuthToken(
     if (authType === 'apiToken') {
         if (!credentials.apiToken) {
             throw new NodeApiError(context.getNode(), {
-                message: 'API Token do Krayin CRM não foi informado.',
+                message: 'Krayin CRM API Token was not provided.',
             } as JsonObject);
         }
         return { token: credentials.apiToken, workingLoginPath: '' };
     }
 
-    // Autenticação via Login (Email + Senha)
+    // Authentication via Login (Email + Password)
     if (!credentials.email || !credentials.password) {
         throw new NodeApiError(context.getNode(), {
-            message: 'Email e Senha do Krayin CRM são obrigatórios para autenticação via Login.',
+            message: 'Krayin CRM Email and Password are required for Login authentication.',
         } as JsonObject);
     }
 
@@ -71,13 +71,13 @@ export async function getAuthToken(
 
     const deviceName = credentials.deviceName || 'n8n';
 
-    // Lista de candidatos a endpoints de login
+    // Candidate login endpoint paths
     const specifiedPath = credentials.loginPath?.trim();
     const candidatePaths: string[] = [];
     if (specifiedPath) {
         candidatePaths.push(specifiedPath.startsWith('/') ? specifiedPath : `/${specifiedPath}`);
     }
-    // Adiciona caminhos padrão se não constarem
+    // Add default paths if not already present
     const defaults = ['/api/v1/login', '/api/admin/login', '/public/api/v1/login', '/public/api/admin/login'];
     for (const d of defaults) {
         if (!candidatePaths.includes(d)) {
@@ -114,11 +114,11 @@ export async function getAuthToken(
             break;
         } catch (error: any) {
             lastError = error;
-            // Se for 404 Not Found, tenta o próximo candidato
+            // If 404 Not Found, try the next candidate path
             if (error.response?.status === 404) {
                 continue;
             }
-            // Se for outro erro (ex: 422 Credenciais Inválidas), para e joga o erro
+            // If another error occurred (e.g. 422 Invalid Credentials), stop and throw the error
             break;
         }
     }
@@ -138,13 +138,13 @@ export async function getAuthToken(
             }
 
             throw new NodeApiError(context.getNode(), {
-                message: `Falha no login do Krayin CRM (${workingPath}): ${errorMessage}`,
+                message: `Krayin CRM login failed (${workingPath}): ${errorMessage}`,
                 httpCode: lastError.response.status?.toString(),
                 description: JSON.stringify(data),
             } as JsonObject);
         }
 
-        throw new NodeApiError(context.getNode(), (lastError || { message: 'Falha ao conectar no endpoint de login' }) as JsonObject);
+        throw new NodeApiError(context.getNode(), (lastError || { message: 'Failed to connect to the login endpoint' }) as JsonObject);
     }
 
     const token =
@@ -155,12 +155,12 @@ export async function getAuthToken(
 
     if (!token) {
         throw new NodeApiError(context.getNode(), {
-            message: 'Login no Krayin realizado com sucesso, mas nenhum token foi retornado pela API.',
+            message: 'Krayin login succeeded, but no token was returned by the API.',
             description: JSON.stringify(response),
         } as JsonObject);
     }
 
-    // Cacheia o token por 12 horas
+    // Cache token for 12 hours
     tokenCache.set(cacheKey, {
         token,
         expiresAt: Date.now() + 12 * 60 * 60 * 1000,
@@ -171,7 +171,7 @@ export async function getAuthToken(
 }
 
 /**
- * Faz uma requisição HTTP autenticada à REST API do Krayin CRM
+ * Performs an authenticated HTTP request to the Krayin CRM REST API
  */
 export async function krayinApiRequest(
     this: IExecuteFunctions | ILoadOptionsFunctions,
@@ -184,14 +184,14 @@ export async function krayinApiRequest(
 
     if (!credentials.baseUrl) {
         throw new NodeApiError(this.getNode(), {
-            message: 'URL Base da instância do Krayin CRM não foi informada.',
+            message: 'Krayin CRM instance Base URL was not provided.',
         } as JsonObject);
     }
 
     let auth = await getAuthToken(this, credentials);
     const cleanBaseUrl = normalizeBaseUrl(credentials.baseUrl);
 
-    // Se o login foi bem sucedido com prefixo /public (ex: /public/api/v1/login), ajusta o endpoint
+    // If login succeeded with /public prefix (e.g. /public/api/v1/login), adjust the endpoint
     const prefix = auth.workingLoginPath.startsWith('/public') ? '/public' : '';
 
     const buildFullUrl = (pfx: string, path: string) => {
@@ -226,14 +226,14 @@ export async function krayinApiRequest(
     try {
         return await makeRequest(auth.token);
     } catch (error: any) {
-        // Se retornar 401 (Unauthorized) e estiver usando autenticação via Login, renova o token e retenta uma vez
+        // If 401 (Unauthorized) is returned and using Login authentication, refresh token and retry once
         const isLogin = credentials.authenticationType !== 'apiToken';
         if (error.response?.status === 401 && isLogin) {
             try {
                 auth = await getAuthToken(this, credentials, true);
                 return await makeRequest(auth.token);
             } catch {
-                // Se renovação falhar, propaga o erro original
+                // If refresh fails, ignore and propagate original error
             }
         }
 
@@ -260,7 +260,7 @@ export async function krayinApiRequest(
 }
 
 /**
- * Busca todos os itens paginados da API do Krayin CRM
+ * Fetches all paginated items from the Krayin CRM API
  */
 export async function krayinApiRequestAllItems(
     this: IExecuteFunctions,
