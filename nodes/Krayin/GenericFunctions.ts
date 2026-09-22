@@ -1,3 +1,7 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import * as crypto from 'crypto';
 import type {
     IExecuteFunctions,
     ILoadOptionsFunctions,
@@ -18,13 +22,99 @@ export interface IKrayinCredentials {
     apiToken?: string;
 }
 
-// In-memory cache for tokens obtained via login: cacheKey -> { token, expiresAt, workingLoginPath }
+// In-memory & Shared Disk cache for tokens obtained via login
 interface ITokenCacheItem {
     token: string;
     expiresAt: number;
     workingLoginPath?: string;
+    updatedAt?: number;
 }
+
 const tokenCache: Map<string, ITokenCacheItem> = new Map();
+
+/**
+ * Returns a stable filesystem path in os.tmpdir() to share cached tokens
+ * between isolated n8n execution subprocesses.
+ */
+function getDiskCacheFilePath(cacheKey: string): string {
+    const hash = crypto.createHash('sha256').update(cacheKey).digest('hex').substring(0, 16);
+    return path.join(os.tmpdir(), `n8n-krayin-auth-${hash}.json`);
+}
+
+/**
+ * Reads token from shared disk cache
+ */
+function readDiskCache(cacheKey: string): ITokenCacheItem | null {
+    try {
+        const filePath = getDiskCacheFilePath(cacheKey);
+        if (!fs.existsSync(filePath)) {
+            return null;
+        }
+        const data = fs.readFileSync(filePath, 'utf-8');
+        const parsed = JSON.parse(data) as ITokenCacheItem;
+        if (parsed?.token && typeof parsed.expiresAt === 'number') {
+            return parsed;
+        }
+    } catch {
+        // Ignore filesystem read errors and fallback safely
+    }
+    return null;
+}
+
+/**
+ * Writes token to shared disk cache
+ */
+function writeDiskCache(cacheKey: string, item: ITokenCacheItem): void {
+    try {
+        const filePath = getDiskCacheFilePath(cacheKey);
+        fs.writeFileSync(filePath, JSON.stringify(item), 'utf-8');
+    } catch {
+        // Ignore filesystem write errors
+    }
+}
+
+/**
+ * Clears token from shared disk cache
+ */
+function clearDiskCache(cacheKey: string): void {
+    try {
+        const filePath = getDiskCacheFilePath(cacheKey);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+    } catch {
+        // Ignore filesystem errors
+    }
+}
+
+/**
+ * Detects whether an error is a 401 Unauthorized error in any n8n HTTP format
+ */
+function is401Unauthorized(error: any): boolean {
+    if (!error) return false;
+    const status =
+        error.statusCode ||
+        error.httpCode ||
+        error.response?.status ||
+        error.response?.statusCode ||
+        error.status;
+
+    if (status === 401 || String(status) === '401') {
+        return true;
+    }
+
+    const message = (error.message || '') + (typeof error.description === 'string' ? error.description : '');
+    const dataMessage = error.response?.data?.message || '';
+    const fullText = `${message} ${dataMessage}`.toLowerCase();
+
+    return (
+        fullText.includes('401') ||
+        fullText.includes('não autorizado') ||
+        fullText.includes('nao autorizado') ||
+        fullText.includes('unauthenticated') ||
+        fullText.includes('unauthorized')
+    );
+}
 
 /**
  * Normalizes the base URL by stripping trailing slashes
@@ -62,10 +152,20 @@ export async function getAuthToken(
     const cleanBaseUrl = normalizeBaseUrl(credentials.baseUrl);
     const cacheKey = `${cleanBaseUrl}:${credentials.email}`;
 
-    if (!forceRefresh && tokenCache.has(cacheKey)) {
-        const cached = tokenCache.get(cacheKey)!;
-        if (Date.now() < cached.expiresAt) {
-            return { token: cached.token, workingLoginPath: cached.workingLoginPath || '/api/v1/login' };
+    if (!forceRefresh) {
+        // 1. Check in-memory cache
+        if (tokenCache.has(cacheKey)) {
+            const cached = tokenCache.get(cacheKey)!;
+            if (Date.now() < cached.expiresAt) {
+                return { token: cached.token, workingLoginPath: cached.workingLoginPath || '/api/v1/login' };
+            }
+        }
+
+        // 2. Check shared disk cache (persists across n8n execution subprocesses)
+        const diskCached = readDiskCache(cacheKey);
+        if (diskCached && Date.now() < diskCached.expiresAt) {
+            tokenCache.set(cacheKey, diskCached);
+            return { token: diskCached.token, workingLoginPath: diskCached.workingLoginPath || '/api/v1/login' };
         }
     }
 
@@ -125,6 +225,7 @@ export async function getAuthToken(
 
     if (!response) {
         tokenCache.delete(cacheKey);
+        clearDiskCache(cacheKey);
 
         if (lastError?.response?.data) {
             const data = lastError.response.data;
@@ -160,12 +261,16 @@ export async function getAuthToken(
         } as JsonObject);
     }
 
-    // Cache token for 12 hours
-    tokenCache.set(cacheKey, {
+    // Cache token for 12 hours (both in-memory and shared disk)
+    const cacheItem: ITokenCacheItem = {
         token,
         expiresAt: Date.now() + 12 * 60 * 60 * 1000,
         workingLoginPath: workingPath,
-    });
+        updatedAt: Date.now(),
+    };
+
+    tokenCache.set(cacheKey, cacheItem);
+    writeDiskCache(cacheKey, cacheItem);
 
     return { token, workingLoginPath: workingPath };
 }
@@ -188,8 +293,10 @@ export async function krayinApiRequest(
         } as JsonObject);
     }
 
-    let auth = await getAuthToken(this, credentials);
     const cleanBaseUrl = normalizeBaseUrl(credentials.baseUrl);
+    const cacheKey = `${cleanBaseUrl}:${credentials.email || 'token'}`;
+
+    let auth = await getAuthToken(this, credentials);
 
     // If login succeeded with /public prefix (e.g. /public/api/v1/login), adjust the endpoint
     const prefix = auth.workingLoginPath.startsWith('/public') ? '/public' : '';
@@ -226,14 +333,38 @@ export async function krayinApiRequest(
     try {
         return await makeRequest(auth.token);
     } catch (error: any) {
-        // If 401 (Unauthorized) is returned and using Login authentication, refresh token and retry once
+        // If 401 (Unauthorized) is returned and using Login authentication, handle concurrency & refresh
         const isLogin = credentials.authenticationType !== 'apiToken';
-        if (error.response?.status === 401 && isLogin) {
-            try {
-                auth = await getAuthToken(this, credentials, true);
-                return await makeRequest(auth.token);
-            } catch {
-                // If refresh fails, ignore and propagate original error
+        if (isLogin && is401Unauthorized(error)) {
+            // Apply randomized jitter (250-600ms) to resolve race condition across parallel workers
+            await new Promise((resolve) => setTimeout(resolve, 250 + Math.floor(Math.random() * 350)));
+
+            // Check if disk cache was recently updated by another concurrent execution
+            const diskCached = readDiskCache(cacheKey);
+            let freshToken = '';
+
+            if (diskCached && diskCached.token !== auth.token && Date.now() < diskCached.expiresAt) {
+                // Another execution already logged in and wrote the new token! Reuse it without re-logging in.
+                freshToken = diskCached.token;
+                auth = { token: freshToken, workingLoginPath: diskCached.workingLoginPath || auth.workingLoginPath };
+                tokenCache.set(cacheKey, diskCached);
+            } else {
+                // Invalidate disk cache and perform a clean login
+                clearDiskCache(cacheKey);
+                try {
+                    auth = await getAuthToken(this, credentials, true);
+                    freshToken = auth.token;
+                } catch {
+                    // If login refresh fails, propagate original error below
+                }
+            }
+
+            if (freshToken) {
+                try {
+                    return await makeRequest(freshToken);
+                } catch (retryError: any) {
+                    error = retryError;
+                }
             }
         }
 
@@ -250,7 +381,7 @@ export async function krayinApiRequest(
 
             throw new NodeApiError(this.getNode(), {
                 message: errorMessage,
-                httpCode: error.response.status?.toString(),
+                httpCode: error.response.status?.toString() || error.statusCode?.toString(),
                 description: JSON.stringify(data),
             } as JsonObject);
         }
