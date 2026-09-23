@@ -905,7 +905,19 @@ export class Krayin implements INodeType {
                         returnData.push({ json: entry, pairedItem: { item: i } });
                     }
                 } else if (responseData !== undefined && responseData !== null) {
-                    returnData.push({ json: responseData, pairedItem: { item: i } });
+                    let formattedJson = responseData;
+                    if (
+                        typeof responseData === 'object' &&
+                        responseData.data &&
+                        typeof responseData.data === 'object' &&
+                        !Array.isArray(responseData.data)
+                    ) {
+                        formattedJson = {
+                            ...responseData.data,
+                            ...responseData,
+                        };
+                    }
+                    returnData.push({ json: formattedJson, pairedItem: { item: i } });
                 }
             } catch (error: any) {
                 if (this.continueOnFail()) {

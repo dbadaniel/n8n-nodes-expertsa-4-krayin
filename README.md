@@ -74,19 +74,34 @@ This node supports all core Krayin CRM resources:
 
 In n8n, navigate to **Credentials > Add Credential** and search for **Krayin CRM API**.
 
-### ✅ Recommended Option: Login (Email & Password)
-This is the production-tested and recommended authentication method:
-1. In **Authentication Type**, select: `Login (Email & Password) - Recommended`.
+### 🌟 Option 1: API Token (Personal Access Token) — Recommended for High Concurrency
+This is the fastest, zero-latency, and most robust method for production workflows handling simultaneous webhooks.
+
+To enable Personal Access Tokens visually in your Krayin CRM, install the official [**expertsa/krayin-api-keys**](https://github.com/expertsa/krayin-api-keys) plugin:
+
+```bash
+# In your Krayin CRM root directory:
+composer require expertsa/krayin-api-keys
+php artisan optimize:clear
+```
+
+**How to get your API Token:**
+1. In your Krayin CRM panel, go to **Settings > API Keys** (`/admin/settings/api-keys`).
+2. Click **"+ Create API Key"** and give it a label (e.g. `n8n Production`).
+3. Copy the generated Personal Access Token.
+4. In n8n, select **Authentication Type:** `API Token (Personal Access Token) - Recommended for High Concurrency`.
+5. Enter your **Base URL** and paste the token into **API Token**.
+
+---
+
+### 🔑 Option 2: Login (Email & Password)
+Authenticates directly via the Krayin REST API using administrator credentials:
+1. In **Authentication Type**, select: `Login (Email & Password)`.
 2. Fill in:
    - **Base URL**: Your Krayin instance URL (e.g. `https://crm.yourdomain.com`).
    - **Email**: Administrator/user email in Krayin CRM.
    - **Password**: User password.
-3. The node automatically logs in via API and manages Bearer tokens in memory with periodic renewal.
-
----
-
-> ⚠️ **Note regarding direct API Token:**
-> Direct Bearer API Token authentication (Laravel Sanctum) is currently in development. For reliable connections, please use the **"Login (Email & Password)"** option.
+3. The node logs in via API and automatically shares cached Bearer tokens across parallel n8n workers with auto-renewal.
 
 ---
 

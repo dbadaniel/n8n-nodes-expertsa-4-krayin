@@ -17,17 +17,17 @@ export class KrayinApi implements ICredentialType {
             type: 'options',
             options: [
                 {
-                    name: 'Login (Email & Password) - Recommended',
-                    value: 'login',
-                    description: 'Authenticates via API and obtains the Bearer token automatically',
+                    name: 'API Token (Personal Access Token) - Recommended for High Concurrency',
+                    value: 'apiToken',
+                    description: 'Direct Bearer token generated in Krayin CRM via expertsa/krayin-api-keys plugin',
                 },
                 {
-                    name: 'API Token (In Development)',
-                    value: 'apiToken',
-                    description: 'Direct Bearer token option (use Login for standard setup)',
+                    name: 'Login (Email & Password)',
+                    value: 'login',
+                    description: 'Authenticates via API and obtains Bearer token automatically with persistent cache',
                 },
             ],
-            default: 'login',
+            default: 'apiToken',
             description: 'How n8n should authenticate with the Krayin CRM API',
         },
         {
@@ -38,6 +38,23 @@ export class KrayinApi implements ICredentialType {
             placeholder: 'https://crm.example.com or http://localhost/public',
             required: true,
             description: 'The base URL of the Krayin CRM instance (without trailing slash)',
+        },
+        // API Token
+        {
+            displayName: 'API Token',
+            name: 'apiToken',
+            type: 'string',
+            typeOptions: {
+                password: true,
+            },
+            default: '',
+            required: true,
+            displayOptions: {
+                show: {
+                    authenticationType: ['apiToken'],
+                },
+            },
+            description: 'Personal Access Token generated in Krayin CRM (Settings > API Keys with expertsa/krayin-api-keys plugin)',
         },
         // Login Credentials
         {
@@ -96,39 +113,19 @@ export class KrayinApi implements ICredentialType {
             },
             description: 'Path of the login endpoint. Default is /api/v1/login.',
         },
-        // API Token
-        {
-            displayName: 'API Token',
-            name: 'apiToken',
-            type: 'string',
-            typeOptions: {
-                password: true,
-            },
-            default: '',
-            required: true,
-            displayOptions: {
-                show: {
-                    authenticationType: ['apiToken'],
-                },
-            },
-            description: 'The Bearer API token generated in Krayin CRM',
-        },
     ];
 
     test: ICredentialTestRequest = {
         request: {
             baseURL: '={{$credentials?.baseUrl?.replace(/\\/+$/, "")}}',
-            url: '={{$credentials?.loginPath || "/api/v1/login"}}',
-            method: 'POST',
+            url: '={{$credentials?.authenticationType === "apiToken" ? "/api/v1/settings/pipelines" : ($credentials?.loginPath || "/api/v1/login")}}',
+            method: '={{$credentials?.authenticationType === "apiToken" ? "GET" : "POST"}}' as any,
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
+                Authorization: '={{$credentials?.authenticationType === "apiToken" ? "Bearer " + $credentials?.apiToken : undefined}}',
             },
-            body: {
-                email: '={{$credentials?.email}}',
-                password: '={{$credentials?.password}}',
-                device_name: '={{$credentials?.deviceName || "n8n"}}',
-            },
+            body: '={{$credentials?.authenticationType === "apiToken" ? undefined : ({ email: $credentials?.email, password: $credentials?.password, device_name: $credentials?.deviceName || "n8n" })}}',
         },
     };
 }
